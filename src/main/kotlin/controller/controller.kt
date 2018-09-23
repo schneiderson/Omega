@@ -13,8 +13,7 @@ class ViewController: Controller() {
     private val game: GameView by inject()
     private val boardMenu: BoardMenuView by inject()
     private val board: BoardView by inject()
-    private val gameManager: GameManager = GameManager
-    lateinit var grid: Grid
+    val gameManager: GameManager = GameManager
 //    private val howTo: HowToView by inject()
 //    private val gameOver: GameOverView by inject()
 
@@ -22,7 +21,6 @@ class ViewController: Controller() {
     fun showScreen(screen: String) = when(screen){
         "menu" -> FX.primaryStage.scene.root = menu.root
         "game" -> {
-            grid = gameManager.getGrid()
             FX.primaryStage.scene.root = game.root
         }
 //        "how-to" -> FX.primaryStage.scene.root = howTo.root
@@ -40,14 +38,7 @@ class ViewController: Controller() {
     }
 
     fun cellClick(event: MouseEvent, cell: Cell){
-        var curCellType = cell.cellType
-        if (curCellType > -1){
-            if(curCellType == 4){
-                cell.cellType = 0
-            } else{
-                cell.cellType = curCellType + 1
-            }
-        }
+        gameManager.performMove(cell)
         board.refreshBoard()
     }
 

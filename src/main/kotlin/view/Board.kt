@@ -22,7 +22,7 @@ class BoardView: View("Board"){
                 controller.displayPosition(e)
             }
             
-            hexes = controller.grid.cells.map { Hexagon(it) }
+            hexes = controller.gameManager.getGrid().cells.map { Hexagon(it) }
 
             root.children.addAll(hexes)
 

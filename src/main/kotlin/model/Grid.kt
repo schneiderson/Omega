@@ -1,17 +1,19 @@
 package omega.model
 
-import omega.model.Cell
 import omega.util.Coordinate
-import java.lang.Math.abs
 
-class Grid {
+class Grid (val cells: ArrayList<Cell> = ArrayList()){
     val gridHeight = 19
     val gridWidth = 19
     var disabledRows = 4
 
-    val cells: ArrayList<Cell> = ArrayList<Cell>()
+    init {
+        if(cells.size < 1){
+            initialEmptyGrid()
+        }
+    }
 
-    init{
+    fun initialEmptyGrid(){
         var index = 0
         for (j in 0.until(gridWidth)) {
             for (i in 0.until(gridHeight)) {
@@ -30,7 +32,6 @@ class Grid {
             }
         }
     }
-
 
     fun getCellType(coordinate: Coordinate): Int {
         var invisCells = 0
@@ -59,6 +60,30 @@ class Grid {
         }
 
         return 0
+    }
+
+    fun getCellByIndex(index: Int): Cell? {
+        var cellFound: Cell? = null
+        for(cell in cells){
+            if(cell.index == index){
+                cellFound = cell
+            }
+        }
+
+        if(cellFound == null){
+            throw Exception("Cell with index $index doesn't exist")
+        }
+
+        return cellFound
+    }
+
+    fun deepCopy(): Grid{
+        //
+        var newCells: ArrayList<Cell> = ArrayList()
+        for(cell in cells){
+            newCells.add(cell.copy())
+        }
+        return Grid(newCells)
     }
 
 
