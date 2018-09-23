@@ -2,11 +2,11 @@ package omega.view
 
 import tornadofx.*
 
-class MainView : View("Hello TornadoFX") {
+class MainView : View("Omega") {
     override val root = borderpane {
         prefHeight = 700.0
         prefWidth = 800.0
         top(FirstView::class)
-        center(MenuView::class)
+        center(MainMenuView::class)
     }
 }

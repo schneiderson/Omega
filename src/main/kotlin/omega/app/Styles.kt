@@ -13,6 +13,7 @@ class Styles : Stylesheet() {
         val heading by cssclass()
         val hexagon by cssclass()
         val board by cssclass()
+        val gameStats by cssclass()
         val hexDisabled by cssclass()
         val hexFree by cssclass()
         val statsText by cssclass()
@@ -43,13 +44,13 @@ class Styles : Stylesheet() {
 //            fill = c("MAGENTA")
 //        }
 
-        hexDisabled{
+        hexDisabled {
             fill = c("#608786", 0.2)
             stroke = c("#003838", 0.2)
             strokeWidth = 2.0.px
         }
 
-        hexFree{
+        hexFree {
             fill = c("#9BDEDD", 0.5)
             stroke = c("#003838", 0.5)
         }
@@ -58,6 +59,12 @@ class Styles : Stylesheet() {
             backgroundColor += LinearGradient(0.0, 0.0, 0.0, 1.0, true,
                     CycleMethod.NO_CYCLE, Stop(0.0, c("#006e6e")),
                     Stop(1.0, c("#003838")))
+        }
+
+        gameStats {
+            backgroundColor += LinearGradient(0.0, 0.0, 0.0, 1.0, true,
+                    CycleMethod.NO_CYCLE, Stop(0.0, c("#003838")),
+                    Stop(1.0, c("#006e6e")))
         }
 
 

@@ -5,10 +5,10 @@ import javafx.application.Application
 import javafx.stage.Stage
 import tornadofx.*
 
-class OmegaGUI: App(MainView::class, Styles::class){
+class OmegaGUI : App(MainView::class, Styles::class) {
     var gameManager: GameManager = GameManager
 
-    override fun start(stage: Stage){
+    override fun start(stage: Stage) {
         stage.minHeight = 700.0
         stage.minWidth = 900.0
         super.start(stage)
@@ -16,6 +16,6 @@ class OmegaGUI: App(MainView::class, Styles::class){
 
 }
 
-fun main(args : Array<String>){
+fun main(args: Array<String>) {
     Application.launch(OmegaGUI::class.java, *args)
 }

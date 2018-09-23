@@ -8,12 +8,12 @@ import javafx.scene.shape.Polygon
 import javafx.scene.input.MouseEvent
 import tornadofx.*
 
-class Hexagon: Polygon {
+class Hexagon : Polygon {
     var size: Double
     var cell: Cell
     var strokeSize: Double
 
-    private lateinit var controller: ViewController // TODO: create own controller
+    private lateinit var controller: ViewController // TODO: create own omega.controller
 
     companion object {
         val INDENTATION = 50
@@ -31,14 +31,14 @@ class Hexagon: Polygon {
         }
 
         addEventFilter(MouseEvent.MOUSE_ENTERED) { e ->
-            if(cell.cellType == 0){
+            if (cell.cellType == 0) {
                 strokeWidth = this.strokeSize + 4
             }
             controller.cellHover(e, cell)
         }
 
         addEventFilter(MouseEvent.MOUSE_EXITED) { e ->
-            if(cell.cellType > -1){
+            if (cell.cellType > -1) {
                 strokeWidth = this.strokeSize
             }
         }
@@ -48,50 +48,48 @@ class Hexagon: Polygon {
         repaint(size)
     }
 
-    private fun repaint(size: Double){
+    private fun repaint(size: Double) {
         var corners: ArrayList<Double> = getCorners(size)
         points.setAll(corners)
-//        setFill(getColor(cell.getcellType()))
-        if(!cell.visibility){
+        if (!cell.visibility) {
             isVisible = false
-        }
-        else{
+        } else {
             stroke = c("BLACK")
-            if(cell.cellType == -1) {
+            if (cell.cellType == -1) {
                 // disabled
                 addClass(Styles.hexDisabled)
-            }else if(cell.cellType == 0){
+            } else if (cell.cellType == 0) {
                 // free cell
                 addClass(Styles.hexFree)
-            } else if(cell.cellType == 1) {
+            } else if (cell.cellType == 1) {
                 // player 1
                 fill = c("WHITE")
-            } else if(cell.cellType == 2){
+            } else if (cell.cellType == 2) {
                 // player 2
                 fill = c("BLACK")
                 stroke = c("WHITE")
-            } else if(cell.cellType == 3){
+            } else if (cell.cellType == 3) {
                 // player 3
                 fill = c("#A30049")
-            } else if(cell.cellType == 4){
+            } else if (cell.cellType == 4) {
                 fill = c("#33B800")
             }
         }
         strokeWidth = this.strokeSize
     }
 
-    fun refresh(){
+    fun refresh() {
         repaint(size)
     }
 
-    fun changeSize(size: Double){
+    fun changeSize(size: Double) {
         this.size = size
     }
 
-    fun getCorners(size: Double): ArrayList<Double>{
+    fun getCorners(size: Double): ArrayList<Double> {
         var corners: ArrayList<Double> = ArrayList<Double>()
         var center: Point2D = calcCenter()
-        for (i in 0..5){
+        for (i in 0..5) {
             var degree: Int = 60 * i - 30
             var rad = Math.PI / 180 * degree
             corners.add(center.x + size * Math.cos(rad))
@@ -100,13 +98,10 @@ class Hexagon: Polygon {
         return corners
     }
 
-    fun calcCenter(): Point2D{
-        var height = size * 2
+    fun calcCenter(): Point2D {
         var width = Math.sqrt(3.0) * size
-        var x = INDENTATION + if(cell.coordinate.getY() % 2 == 1) cell.coordinate.getX() * width + width / 2 else cell.coordinate.getX() * width
-        var y = INDENTATION + cell.coordinate.getY() * size * 3/2
-//        println("Center: x: $x, y: $y, coord-x: ${cell.coordinate.getX()}, coord-y: ${cell.coordinate.getY()}")
-//        println("height: $height, widht: $width, size: $size")
+        var x = INDENTATION + if (cell.coordinate.getY() % 2 == 1) cell.coordinate.getX() * width + width / 2 else cell.coordinate.getX() * width
+        var y = INDENTATION + cell.coordinate.getY() * size * 3 / 2
         return Point2D(x, y)
     }
 }

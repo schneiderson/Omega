@@ -6,22 +6,22 @@ import omega.app.Styles
 import omega.controller.ViewController
 import tornadofx.*
 
-class MenuView: View("Omega"){
+class MainMenuView : View("Omega") {
     private val controller: ViewController by inject()
     override val root = VBox()
 
     init {
-        with(root){
+        with(root) {
             style = ("-fx-background-color: #ffffff")
-            button("play"){
+            button("play") {
                 action { controller.showScreen("game") }
                 addClass(Styles.menuButton)
             }
-            button("how-to"){
+            button("how-to") {
                 action { controller.showScreen("how-to") }
                 addClass(Styles.menuButton)
             }
-            button("exit"){
+            button("exit") {
                 action { System.exit(0) }
                 addClass(Styles.menuButton)
             }
