@@ -2,7 +2,11 @@ package omega.model
 
 import omega.util.Coordinate
 
-class Grid(val disabledRows: Int = 4, val cells: ArrayList<Cell> = ArrayList()) {
+class Grid(
+        val disabledRows: Int = 4,
+        val cells: ArrayList<Cell> = ArrayList(),
+        val disabledCells: ArrayList<Cell> = ArrayList())
+    {
     val gridHeight = 19
     val gridWidth = 19
 
@@ -17,7 +21,7 @@ class Grid(val disabledRows: Int = 4, val cells: ArrayList<Cell> = ArrayList()) 
         for (j in 0.until(gridWidth)) {
             for (i in 0.until(gridHeight)) {
                 var coordinate = Coordinate(i, j)
-                var cellType = getCellType(coordinate)
+                var cellType = getCellTypeByCoordinate(coordinate)
 
                 var currIndex = -1
                 if (cellType > -1) {
@@ -27,12 +31,16 @@ class Grid(val disabledRows: Int = 4, val cells: ArrayList<Cell> = ArrayList()) 
 
                 var cell = Cell(coordinate, cellType, currIndex)
 
-                cells.add(cell)
+                if(cellType < 0){
+                    disabledCells.add(cell)
+                } else {
+                    cells.add(cell)
+                }
             }
         }
     }
 
-    private fun getCellType(coordinate: Coordinate): Int {
+    private fun getCellTypeByCoordinate(coordinate: Coordinate): Int {
         var invisCells = 0
         if (coordinate.getY() < 9) {
             invisCells = 9 - coordinate.getY()
@@ -210,7 +218,14 @@ class Grid(val disabledRows: Int = 4, val cells: ArrayList<Cell> = ArrayList()) 
         for (cell in cells) {
             newCells.add(cell.copy())
         }
-        return Grid(disabledRows, newCells)
+        return Grid(disabledRows, newCells, disabledCells)
+    }
+
+    fun getCellsForUI(): ArrayList<Cell>{
+        var allCells = ArrayList<Cell>()
+        allCells.addAll(cells)
+        allCells.addAll(disabledCells)
+        return allCells
     }
 
 

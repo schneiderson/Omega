@@ -1,6 +1,7 @@
-package omega.app
+package omega.game
 
 import omega.ai.Agent
+import omega.ai.GreedyAgent
 import omega.ai.HumanAgent
 import omega.ai.RandomAgent
 import omega.model.Cell
@@ -9,14 +10,14 @@ import omega.model.Grid
 import omega.util.StateChangeListener
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.concurrent.thread
 import kotlin.properties.Delegates
 
 object GameManager {
 
     val playerColor = arrayOf("", "White", "Black", "Red", "Green")
-    val agents: ArrayList<Agent> = arrayListOf(HumanAgent(), RandomAgent(), RandomAgent(), RandomAgent())
+    val agents: ArrayList<Agent> = arrayListOf(HumanAgent(), GreedyAgent(), RandomAgent(), RandomAgent())
 
-    var players: Int = 2
     var boardSize: Int = 5
     val maxBoardSize: Int = 10
 
@@ -38,7 +39,7 @@ object GameManager {
     }
 
     fun changeNumberOfPlayers(players: Int) {
-        this.players = players
+        currentState.players = players
     }
 
     fun addStateChangeListener(listener: StateChangeListener){
@@ -53,29 +54,20 @@ object GameManager {
         return currentState.playerTurn
     }
 
+    fun getNumberOfPlayers(): Int{
+        return currentState.players
+    }
+
     fun colorToPlay(): Int {
         return currentState.colorToPlay
     }
 
     fun nextPlayersTurn(): Int {
-        var currentPlayer = getCurrentPlayer()
-        if (colorToPlay() < players) {
-            return currentPlayer
-        } else {
-            if (currentPlayer < players) {
-                return currentPlayer + 1
-            } else {
-                return 1
-            }
-        }
+        return currentState.nextPlayersTurn()
     }
 
     fun nextColorToPlay(): Int {
-        if (colorToPlay() < players) {
-            return colorToPlay() + 1
-        }
-        return 1
-
+        return currentState.nextColorToPlay()
     }
 
     fun currentPlayerIsHuman(): Boolean{
@@ -86,9 +78,9 @@ object GameManager {
 
 
     /* MOVE MANAGEMENT */
-    fun performMove(cell: Cell, cellType: Int) {
+    fun performMove(action: Action) {
         stateHistory.addLast(currentState)
-        currentState = currentState.applyMove(cell, cellType, nextPlayersTurn(), nextColorToPlay())
+        currentState = currentState.applyMove(action)
         getNextMove()
     }
 
@@ -98,12 +90,15 @@ object GameManager {
         if(agent is HumanAgent){
             // wait for UI input
         } else{
-            performMove(agent.getAction(currentState))
+            // get AI action in separate thread
+            thread {
+                performMove(agent.getAction(currentState))
+            }
         }
     }
 
     fun performMove(cell: Cell) {
-        performMove(cell, currentState.colorToPlay)
+        performMove(Action(cell.coordinate, currentState.colorToPlay))
     }
 
     fun undoMove() {
@@ -121,10 +116,7 @@ object GameManager {
     }
 
     fun gameEnd(): Boolean{
-        if(getCurrentPlayer() == 1 && colorToPlay() == 1){
-            return currentState.grid.getFreeCells().size < (players * 2)
-        }
-        return false
+        return currentState.gameEnd()
     }
 
 }

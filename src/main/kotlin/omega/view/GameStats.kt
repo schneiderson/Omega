@@ -2,7 +2,7 @@ package omega.view
 
 import javafx.scene.control.Label
 import javafx.scene.text.Text
-import omega.app.Styles
+import omega.game.Styles
 import omega.controller.ViewController
 import omega.model.Cell
 import omega.ui.Hexagon
@@ -28,10 +28,11 @@ class GameStatsView : View("Game Stats") {
 
         children.addAll(currentPlayer, player, currTile, hexagon, scores, player1Score, player2Score)
 
-        if(controller.gameManager.players > 2){
+        if(controller.gameManager.getNumberOfPlayers() > 2){
             children.add(player3Score)
         }
-        if(controller.gameManager.players > 3){
+
+        if(controller.gameManager.getNumberOfPlayers() > 3){
             children.add(player4Score)
         }
     }

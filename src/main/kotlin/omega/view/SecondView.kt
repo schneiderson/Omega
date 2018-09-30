@@ -1,6 +1,6 @@
 package omega.view
 
-import omega.app.Styles
+import omega.game.Styles
 import tornadofx.*
 
 class SecondView : View("Hello SecondView") {

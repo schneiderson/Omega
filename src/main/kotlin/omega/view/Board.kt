@@ -1,7 +1,7 @@
 package omega.view
 
 import javafx.scene.control.Label
-import omega.app.Styles
+import omega.game.Styles
 import omega.controller.ViewController
 import omega.ui.Hexagon
 import javafx.scene.input.MouseEvent
@@ -23,7 +23,7 @@ class BoardView : View("Board") {
                 controller.displayPosition(e)
             }
 
-            hexes = controller.gameManager.getGrid().cells.map { Hexagon(it) }
+            hexes = controller.gameManager.getGrid().getCellsForUI().map { Hexagon(it) }
 
             root.children.addAll(hexes)
 
@@ -33,7 +33,7 @@ class BoardView : View("Board") {
     fun refreshBoard() {
         with(root){
             root.children.removeAll(hexes)
-            hexes = controller.gameManager.getGrid().cells.map { Hexagon(it) }
+            hexes = controller.gameManager.getGrid().getCellsForUI().map { Hexagon(it) }
             root.children.addAll(hexes)
         }
     }

@@ -1,6 +1,6 @@
 package omega.view
 
-import omega.app.Styles
+import omega.game.Styles
 import tornadofx.*
 
 class FirstView : View("Omega board game") {

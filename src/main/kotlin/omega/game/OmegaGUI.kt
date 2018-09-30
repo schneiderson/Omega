@@ -1,4 +1,4 @@
-package omega.app
+package omega.game
 
 import omega.view.MainView
 import javafx.application.Application

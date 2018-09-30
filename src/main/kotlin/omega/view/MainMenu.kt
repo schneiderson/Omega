@@ -2,7 +2,7 @@ package omega.view
 
 import javafx.scene.layout.VBox
 
-import omega.app.Styles
+import omega.game.Styles
 import omega.controller.ViewController
 import tornadofx.*
 

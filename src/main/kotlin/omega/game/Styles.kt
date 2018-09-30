@@ -1,4 +1,4 @@
-package omega.app
+package omega.game
 
 import javafx.scene.text.FontWeight
 import javafx.scene.Cursor

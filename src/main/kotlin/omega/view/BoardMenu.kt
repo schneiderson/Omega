@@ -1,6 +1,6 @@
 package omega.view
 
-import omega.app.Styles
+import omega.game.Styles
 import javafx.scene.control.Label
 import omega.controller.ViewController
 import tornadofx.*
@@ -13,7 +13,7 @@ class BoardMenuView : View("Board menu") {
     var axial: Label = Label("axial")
     var cube: Label = Label("cube")
     var label: Label = Label(title)
-    var undoButton = button("Undo Move") {
+    var undoButton = button("Undo Action") {
         action { controller.undoMove() }
         addClass(Styles.menuButton)
         isDisable = true

@@ -1,7 +1,8 @@
 package omega.controller
 
 
-import omega.app.GameManager
+import javafx.application.Platform
+import omega.game.GameManager
 import omega.model.Cell
 import omega.view.*
 import tornadofx.*
@@ -40,7 +41,10 @@ class ViewController : Controller(), StateChangeListener {
     }
 
     override fun onValueChanged(state: State) {
-        refreshUi()
+        // Platform.runLater is required to avoid thread interferences
+        Platform.runLater {
+            refreshUi()
+        }
     }
 
     fun newGame() {

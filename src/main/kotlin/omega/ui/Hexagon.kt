@@ -1,6 +1,6 @@
 package omega.ui
 
-import omega.app.Styles
+import omega.game.Styles
 import omega.controller.ViewController
 import omega.model.Cell
 import javafx.geometry.Point2D
