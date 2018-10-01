@@ -1,6 +1,6 @@
 package omega.searchtree
 
-import omega.game.Action
+import omega.model.Action
 import omega.model.State
 
 class Node (val tree: Tree, val state: State){
@@ -29,7 +29,7 @@ class Node (val tree: Tree, val state: State){
     }
 
     fun getBestAction(): Edge{
-        var highScore = Double.MIN_VALUE
+        var highScore = Double.NEGATIVE_INFINITY
         var highScorer = childConnections.get(0)
 
         for(edge in childConnections){

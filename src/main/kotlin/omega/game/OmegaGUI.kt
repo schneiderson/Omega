@@ -1,6 +1,6 @@
 package omega.game
 
-import omega.view.MainView
+import omega.ui.views.MainView
 import javafx.application.Application
 import javafx.stage.Stage
 import tornadofx.*

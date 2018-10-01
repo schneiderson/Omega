@@ -1,6 +1,6 @@
 package omega.ai
 
-import omega.game.Action
+import omega.model.Action
 import omega.model.State
 
 interface Agent {

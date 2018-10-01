@@ -4,10 +4,10 @@ package omega.controller
 import javafx.application.Platform
 import omega.game.GameManager
 import omega.model.Cell
-import omega.view.*
 import tornadofx.*
 import javafx.scene.input.MouseEvent
 import omega.model.State
+import omega.ui.views.*
 import omega.util.StateChangeListener
 
 

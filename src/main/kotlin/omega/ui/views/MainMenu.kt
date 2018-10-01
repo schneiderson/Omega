@@ -1,4 +1,4 @@
-package omega.view
+package omega.ui.views
 
 import javafx.scene.layout.VBox
 

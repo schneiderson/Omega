@@ -2,7 +2,7 @@ package omega.ai
 
 import omega.ai.evaluation.NodeEvaluation
 import omega.ai.evaluation.SimpleScore
-import omega.game.Action
+import omega.model.Action
 import omega.model.State
 import omega.searchtree.Node
 import omega.searchtree.Tree
@@ -27,7 +27,6 @@ class GreedyAgent(): Agent{
         evaluate(root)
 
         return root.getBestAction().move
-
     }
 
     fun evaluate(node: Node){
@@ -37,10 +36,7 @@ class GreedyAgent(): Agent{
 
         // TODO: Consider using coroutines
         for(edge in node.childConnections){
-            var toNode = edge.toNode
-            toNode.score = evaluator.evaluate(toNode, playerTurn)
-
-            edge.score = toNode.score - node.score
+            edge.toNode.score = evaluator.evaluate(edge.toNode, playerTurn)
         }
 
     }

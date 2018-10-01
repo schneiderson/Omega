@@ -1,9 +1,7 @@
 package omega.game
 
-import omega.ai.Agent
-import omega.ai.GreedyAgent
-import omega.ai.HumanAgent
-import omega.ai.RandomAgent
+import omega.ai.*
+import omega.model.Action
 import omega.model.Cell
 import omega.model.State
 import omega.model.Grid
@@ -16,9 +14,9 @@ import kotlin.properties.Delegates
 object GameManager {
 
     val playerColor = arrayOf("", "White", "Black", "Red", "Green")
-    val agents: ArrayList<Agent> = arrayListOf(HumanAgent(), GreedyAgent(), RandomAgent(), RandomAgent())
+    val agents: ArrayList<Agent> = arrayListOf(HumanAgent(), MiniMaxAgent(), RandomAgent(), RandomAgent())
 
-    var boardSize: Int = 5
+    var boardSize: Int = 3
     val maxBoardSize: Int = 10
 
     var stateChangeListener: StateChangeListener? = null

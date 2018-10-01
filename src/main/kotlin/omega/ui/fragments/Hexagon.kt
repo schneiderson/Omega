@@ -1,4 +1,4 @@
-package omega.ui
+package omega.ui.fragments
 
 import omega.game.Styles
 import omega.controller.ViewController

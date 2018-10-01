@@ -1,9 +1,9 @@
-package omega.view
+package omega.ui.views
 
 import javafx.scene.control.Label
 import omega.game.Styles
 import omega.controller.ViewController
-import omega.ui.Hexagon
+import omega.ui.fragments.Hexagon
 import javafx.scene.input.MouseEvent
 import tornadofx.*
 import javafx.scene.layout.Pane

@@ -1,11 +1,11 @@
-package omega.view
+package omega.ui.views
 
 import javafx.scene.control.Label
 import javafx.scene.text.Text
 import omega.game.Styles
 import omega.controller.ViewController
 import omega.model.Cell
-import omega.ui.Hexagon
+import omega.ui.fragments.Hexagon
 import omega.util.Coordinate
 import tornadofx.*
 
@@ -15,7 +15,7 @@ class GameStatsView : View("Game Stats") {
     var currentPlayer: Label = Label("Current Player: ")
     var player: Text = Text("1 (White)")
     var currTile: Label = Label("Next Tile: ")
-    var hexagon = Hexagon(Cell(Coordinate(1,1), 1, 1))
+    var hexagon = Hexagon(Cell(Coordinate(1, 1), 1, 1))
     var scores: Label = Label("Current Score: ")
     var player1Score: Text = Text("Player 1 (White): 0")
     var player2Score: Text = Text("Player 2 (Black): 0")

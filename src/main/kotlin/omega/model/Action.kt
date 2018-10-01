@@ -1,4 +1,4 @@
-package omega.game
+package omega.model
 
 import omega.util.Coordinate
 

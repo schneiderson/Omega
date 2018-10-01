@@ -1,7 +1,5 @@
 package omega.model
 
-import omega.game.Action
-
 
 class State(var grid: Grid = Grid(), var playerTurn: Int = 1, var colorToPlay: Int = 1) {
 
@@ -61,7 +59,11 @@ class State(var grid: Grid = Grid(), var playerTurn: Int = 1, var colorToPlay: I
     }
 
     fun getLegalActions(): List<Action>{
-        return grid.getFreeCells().map{Action(it.coordinate, colorToPlay)}
+        return grid.getFreeCells().map{ Action(it.coordinate, colorToPlay) }
+    }
+
+    fun getOpponent(player: Int): Int{
+        return if(player == 1) 2 else 1
     }
 
 }

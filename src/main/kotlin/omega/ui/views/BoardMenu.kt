@@ -1,4 +1,4 @@
-package omega.view
+package omega.ui.views
 
 import omega.game.Styles
 import javafx.scene.control.Label

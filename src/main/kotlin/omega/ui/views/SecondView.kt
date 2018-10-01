@@ -1,14 +1,13 @@
-package omega.view
+package omega.ui.views
 
 import omega.game.Styles
 import tornadofx.*
 
-class FirstView : View("Omega board game") {
+class SecondView : View("Hello SecondView") {
 
     override val root = hbox {
         label(title) {
             addClass(Styles.heading)
         }
-
     }
 }

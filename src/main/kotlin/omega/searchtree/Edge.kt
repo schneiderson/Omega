@@ -1,6 +1,6 @@
 package omega.searchtree
 
-import omega.game.Action
+import omega.model.Action
 
 class Edge (val move: Action, val fromNode: Node, val toNode: Node){
 
