@@ -14,13 +14,8 @@ import kotlin.system.measureTimeMillis
 class MiniMaxAgent(): Agent{
     fun <E> List<E>.getRandomElement() = this[Random().nextInt(this.size)]
 
-    var evaluator: NodeEvaluation
-    var maxDepth = 5
-    var executeAsync = true
-
-    init {
-        evaluator = SimpleScore()
-    }
+    var evaluator: NodeEvaluation = SimpleScore()
+    var maxDepth = 4
 
     override
     fun getAction(state: State): Action {
@@ -35,53 +30,27 @@ class MiniMaxAgent(): Agent{
     }
 
     fun evaluate(root: Node, depth: Int, maximizingPlayer: Int){
-        root.expand()
-
-
-
         val timeElapsed = measureTimeMillis {
-            if(executeAsync){
-                val deferred = (root.childConnections).map { n ->
-                    async {
-                        n.toNode.score = miniMax(n.toNode, depth - 1, maximizingPlayer)
-                    }
-                }
-
-                runBlocking {
-                    deferred.forEach {
-                        it.await()
-                    }
-                }
-            }
-            else{
-                for(edge in root.childConnections) {
-                    edge.toNode.score = miniMax(edge.toNode, depth - 1, maximizingPlayer)
-                }
-            }
+            miniMax(root, depth, maximizingPlayer)
         }
         println("$timeElapsed")
 
     }
 
     fun miniMax(node: Node, depth: Int, maximizingPlayer: Int): Double{
-        var value = Double.NEGATIVE_INFINITY
-        var parentNode = node.parentConnections.get(0).fromNode
         if(depth == 0 || node.state.gameEnd())
             return evaluator.evaluate(node, maximizingPlayer)
-        else if(parentNode.state.playerTurn == maximizingPlayer){
-            node.expand()
-            for(edge in node.childConnections){
-                var nodeValue = miniMax(edge.toNode, depth - 1, maximizingPlayer)
-                value = maxOf(value, nodeValue)
-            }
-        } else {
-            value = Double.POSITIVE_INFINITY
-            node.expand()
-            for(edge in node.childConnections){
-                var nodeValue = miniMax(edge.toNode, depth - 1, maximizingPlayer)
-                value = minOf(value, nodeValue)
-            }
+
+        node.expand()
+        var maximizing = node.state.playerTurn == maximizingPlayer
+        var value = if(maximizing) Double.NEGATIVE_INFINITY else Double.POSITIVE_INFINITY
+
+        for(edge in node.childConnections){
+            var nodeValue = miniMax(edge.toNode, depth - 1, maximizingPlayer)
+            value = if(maximizing) maxOf(value, nodeValue) else minOf(value, nodeValue)
+            edge.toNode.score = value
         }
+
         return value
     }
 }

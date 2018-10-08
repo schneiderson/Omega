@@ -14,7 +14,7 @@ import kotlin.properties.Delegates
 object GameManager {
 
     val playerColor = arrayOf("", "White", "Black", "Red", "Green")
-    val agents: ArrayList<Agent> = arrayListOf(HumanAgent(), MiniMaxAgent(), RandomAgent(), RandomAgent())
+    val agents: ArrayList<Agent> = arrayListOf(HumanAgent(), NegaMaxABAgent(), RandomAgent(), RandomAgent())
 
     var boardSize: Int = 3
     val maxBoardSize: Int = 10

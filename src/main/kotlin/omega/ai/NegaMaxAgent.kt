@@ -15,7 +15,7 @@ class NegaMaxAgent(): Agent{
     fun <E> List<E>.getRandomElement() = this[Random().nextInt(this.size)]
 
     var evaluator: NodeEvaluation = SimpleScore()
-    var maxDepth = 5
+    var maxDepth = 4
 
     override
     fun getAction(state: State): Action {
@@ -30,29 +30,29 @@ class NegaMaxAgent(): Agent{
     }
 
     fun evaluate(root: Node, depth: Int, maximizingPlayer: Int){
-        root.expand()
-
         val timeElapsed = measureTimeMillis {
-            for(edge in root.childConnections) {
-                edge.toNode.score = negaMax(edge.toNode, depth - 1, maximizingPlayer)
-            }
+            negaMax(root, depth, maximizingPlayer)
         }
         println("$timeElapsed")
 
     }
 
     fun negaMax(node: Node, depth: Int, maximizingPlayer: Int): Double{
-        var value = Double.NEGATIVE_INFINITY
-        var parentNode = node.parentConnections.get(0).fromNode
         if(depth == 0 || node.state.gameEnd())
             return evaluator.evaluate(node, maximizingPlayer)
 
-        var factor = if(parentNode.state.playerTurn == node.state.playerTurn) 1 else -1
-
+        var value = Double.NEGATIVE_INFINITY
         node.expand()
+
+        var factor = 1
+        if(node.state.playerTurn !== node.state.nextPlayersTurn()){
+            factor = -1
+        }
+
         for(edge in node.childConnections){
             var nodeValue = negaMax(edge.toNode, depth - 1, maximizingPlayer)
             value = maxOf(value, factor * nodeValue)
+            edge.toNode.score = value
         }
 
         return value
