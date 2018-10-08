@@ -11,11 +11,11 @@ import omega.searchtree.Tree
 import java.util.*
 import kotlin.system.measureTimeMillis
 
-class NegaMaxAgent(): Agent{
+class MiniMax2Agent(): Agent{
     fun <E> List<E>.getRandomElement() = this[Random().nextInt(this.size)]
 
     var evaluator: NodeEvaluation = SimpleScore()
-    var maxDepth = 5
+    var maxDepth = 4
 
     override
     fun getAction(state: State): Action {
@@ -30,29 +30,25 @@ class NegaMaxAgent(): Agent{
     }
 
     fun evaluate(root: Node, depth: Int, maximizingPlayer: Int){
-        root.expand()
-
         val timeElapsed = measureTimeMillis {
-            for(edge in root.childConnections) {
-                edge.toNode.score = negaMax(edge.toNode, depth - 1, maximizingPlayer)
-            }
+            miniMax(root, depth, maximizingPlayer)
         }
         println("$timeElapsed")
 
     }
 
-    fun negaMax(node: Node, depth: Int, maximizingPlayer: Int): Double{
-        var value = Double.NEGATIVE_INFINITY
-        var parentNode = node.parentConnections.get(0).fromNode
+    fun miniMax(node: Node, depth: Int, maximizingPlayer: Int): Double{
         if(depth == 0 || node.state.gameEnd())
             return evaluator.evaluate(node, maximizingPlayer)
 
-        var factor = if(parentNode.state.playerTurn == node.state.playerTurn) 1 else -1
-
         node.expand()
+        var maximizing = node.state.playerTurn == maximizingPlayer
+        var value = if(maximizing) Double.NEGATIVE_INFINITY else Double.POSITIVE_INFINITY
+
         for(edge in node.childConnections){
-            var nodeValue = negaMax(edge.toNode, depth - 1, maximizingPlayer)
-            value = maxOf(value, factor * nodeValue)
+            var nodeValue = miniMax(edge.toNode, depth - 1, maximizingPlayer)
+            value = if(maximizing) maxOf(value, nodeValue) else minOf(value, nodeValue)
+            edge.toNode.score = value
         }
 
         return value
