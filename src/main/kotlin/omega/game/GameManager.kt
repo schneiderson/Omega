@@ -5,6 +5,7 @@ import omega.model.Action
 import omega.model.Cell
 import omega.model.State
 import omega.model.Grid
+import omega.util.GameSpecificKnowledge
 import omega.util.StateChangeListener
 import java.util.*
 import kotlin.collections.ArrayList
@@ -12,10 +13,6 @@ import kotlin.concurrent.thread
 import kotlin.properties.Delegates
 
 object GameManager {
-
-    val playerColor = arrayOf("", "White", "Black", "Red", "Green")
-    val agents: ArrayList<Agent> = arrayListOf(HumanAgent(), NegaMaxABAgent(), RandomAgent(), RandomAgent())
-
     var boardSize: Int = 3
     val maxBoardSize: Int = 10
 
@@ -28,6 +25,9 @@ object GameManager {
             }
     )
     private var stateHistory: LinkedList<State> = LinkedList()
+
+    val playerColor = arrayOf("", "White", "Black", "Red", "Green")
+    val agents: ArrayList<Agent> = arrayListOf(HumanAgent(currentState), MiniMaxABAgent(currentState), RandomAgent(currentState), RandomAgent(currentState))
 
     fun changeBoardSize(size: Int) {
         boardSize = size
@@ -78,7 +78,7 @@ object GameManager {
     /* MOVE MANAGEMENT */
     fun performMove(action: Action) {
         stateHistory.addLast(currentState)
-        currentState = currentState.applyMove(action)
+        currentState = currentState.playMove(action)
         getNextMove()
     }
 
@@ -90,7 +90,7 @@ object GameManager {
         } else{
             // get AI action in separate thread
             thread {
-                performMove(agent.getAction(currentState))
+                performMove(agent.getAction(currentState.clone()))
             }
         }
     }
@@ -110,7 +110,8 @@ object GameManager {
     }
 
     fun getPlayerScore(i: Int): Int {
-        return currentState.scores[i-1]
+        if (i > getNumberOfPlayers()) return 0
+        return currentState.playerScores[i-1].score
     }
 
     fun gameEnd(): Boolean{

@@ -156,20 +156,16 @@ class Grid(
         return cluster
     }
 
-    fun getAllScores(): Array<Int>{
-        var scores = arrayOf(0, 0, 0, 0)
-        for(i in 1..4){
-            scores[i-1] = getPlayerScores(i)
-        }
-        return scores
+    fun getScore(playerScore: PlayerScore){
+        getPlayerScores(playerScore)
     }
 
-    fun getPlayerScores(player: Int): Int{
+    fun getPlayerScores(playerScore: PlayerScore){
         var clusters = ArrayList<ArrayList<Cell>>()
         var visited = ArrayList<Cell>()
 
         for(cell in cells){
-            if(cell.cellType == player && !visited.contains(cell)){
+            if(cell.cellType == playerScore.player && !visited.contains(cell)){
 
                 var cluster = getCellCluster(cell, visited)
                 if(cluster.size > 0){
@@ -186,7 +182,8 @@ class Grid(
             else score *= c.size
         }
 
-        return score
+        playerScore.clusters = clusters
+        playerScore.score = score
     }
 
     fun getFreeCells(): ArrayList<Cell>{
@@ -213,7 +210,6 @@ class Grid(
     }
 
     fun deepCopy(): Grid {
-        //
         var newCells: ArrayList<Cell> = ArrayList()
         for (cell in cells) {
             newCells.add(cell.copy())

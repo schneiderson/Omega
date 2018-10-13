@@ -1,8 +1,7 @@
-package omega.searchtree
+package omega.searchtree2
 
 import omega.model.Action
 import omega.model.State
-import java.lang.Exception
 
 class Node (val tree: Tree, val state: State){
     var isExpanded = false
@@ -23,22 +22,10 @@ class Node (val tree: Tree, val state: State){
         }
     }
 
-    private fun addChildConnectionFromAction(action: Action){
-        var newNode = Node(tree, state)
+    fun addChildConnectionFromAction(action: Action){
+        var newState = state.playMove(action)
+        var newNode = Node(tree, newState)
         childConnections.add(Edge(action, this, newNode))
-    }
-
-    fun gotToChild(edge: Edge){
-        if(childConnections.contains(edge)){
-            state.simulateMove(edge.move)
-        } else{
-            throw Exception("move is an illegal option in this state")
-        }
-    }
-
-    fun goToParent(){
-        var parentEdge = parentConnections.get(0)
-        state.undoSimulatedMove(parentEdge.move)
     }
 
     fun getBestAction(): Edge{

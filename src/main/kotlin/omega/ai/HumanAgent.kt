@@ -4,7 +4,7 @@ import omega.model.Action
 import omega.model.State
 import omega.util.Coordinate
 
-class HumanAgent(): Agent{
+class HumanAgent(var initialState: State): Agent{
 
     override
     fun getAction(state: State): Action {

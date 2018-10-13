@@ -1,7 +1,10 @@
 package omega.ai
 
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.runBlocking
 import omega.ai.evaluation.NodeEvaluation
 import omega.ai.evaluation.SimpleScore
+import omega.ai.evaluation.SimpleScore2
 import omega.model.Action
 import omega.model.State
 import omega.searchtree.Node
@@ -10,12 +13,12 @@ import omega.util.GameSpecificKnowledge
 import java.util.*
 import kotlin.system.measureTimeMillis
 
-class MiniMaxAgent(var initialState: State): Agent{
+class MiniMaxABAgent(var initialState: State): Agent{
     fun <E> List<E>.getRandomElement() = this[Random().nextInt(this.size)]
 
-    var evaluator = SimpleScore()
+    var evaluator = SimpleScore2()
     var gsk = GameSpecificKnowledge(initialState)
-    var maxDepth = 4
+    var maxDepth = 8
 
     override
     fun getAction(state: State): Action {
@@ -31,29 +34,42 @@ class MiniMaxAgent(var initialState: State): Agent{
 
     fun evaluate(root: Node, depth: Int, maximizingPlayer: Int){
         val timeElapsed = measureTimeMillis {
-            miniMax(root, depth, maximizingPlayer)
+            miniMax(root, depth, maximizingPlayer, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY)
         }
         println("$timeElapsed")
 
     }
 
-    fun miniMax(node: Node, depth: Int, maximizingPlayer: Int): Double{
+    fun miniMax(node: Node, depth: Int, maximizingPlayer: Int, alpha_init: Double, beta_init: Double): Double{
         if(depth == 0 || node.state.gameEnd())
             return evaluator.evaluate(node, maximizingPlayer, gsk)
 
-        node.expand()
+        var alpha = alpha_init
+        var beta = beta_init
         var maximizing = node.state.playerTurn == maximizingPlayer
         var value = if(maximizing) Double.NEGATIVE_INFINITY else Double.POSITIVE_INFINITY
+
+        node.expand()
 
         for(edge in node.childConnections){
             edge.toNode.score = value
 
             node.gotToChild(edge)
-            var nodeValue = miniMax(edge.toNode, depth - 1, maximizingPlayer)
+            var nodeValue = miniMax(edge.toNode, depth - 1, maximizingPlayer, alpha, beta)
             edge.toNode.goToParent()
 
-            value = if(maximizing) maxOf(value, nodeValue) else minOf(value, nodeValue)
+            if(maximizing){
+                value = maxOf(value, nodeValue)
+                alpha = maxOf(alpha, value)
+            } else {
+                value = minOf(value, nodeValue)
+                beta = minOf(beta, value)
+            }
             edge.toNode.score = value
+
+            if(alpha >= beta){
+                break
+            }
         }
 
         return value

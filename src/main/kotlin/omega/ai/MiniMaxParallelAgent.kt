@@ -67,7 +67,7 @@ class MiniMaxParallelAgent(): Agent{
         var value = Double.NEGATIVE_INFINITY
         var parentNode = node.parentConnections.get(0).fromNode
         if(depth == 0 || node.state.gameEnd())
-            return evaluator.evaluate(node, maximizingPlayer)
+            return evaluator.evaluate(node, maximizingPlayer, null)
         else if(parentNode.state.playerTurn == maximizingPlayer){
             node.expand()
             for(edge in node.childConnections){

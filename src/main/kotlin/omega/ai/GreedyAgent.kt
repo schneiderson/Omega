@@ -6,16 +6,14 @@ import omega.model.Action
 import omega.model.State
 import omega.searchtree.Node
 import omega.searchtree.Tree
+import omega.util.GameSpecificKnowledge
 import java.util.*
 
-class GreedyAgent(): Agent{
+class GreedyAgent(var initialState: State) : Agent{
+
     fun <E> List<E>.getRandomElement() = this[Random().nextInt(this.size)]
-
-    var evaluator: NodeEvaluation
-
-    init {
-        evaluator = SimpleScore()
-    }
+    var evaluator: NodeEvaluation = SimpleScore()
+    var gsk: GameSpecificKnowledge = GameSpecificKnowledge(initialState)
 
     override
     fun getAction(state: State): Action {
@@ -32,11 +30,10 @@ class GreedyAgent(): Agent{
     fun evaluate(node: Node){
         var playerTurn = node.state.playerTurn
 
-        node.score = evaluator.evaluate(node, playerTurn)
+//        node.score = evaluator.evaluate(node, playerTurn, gsk)
 
-        // TODO: Consider using coroutines
         for(edge in node.childConnections){
-            edge.toNode.score = evaluator.evaluate(edge.toNode, playerTurn)
+            edge.toNode.score = evaluator.evaluate(edge.toNode, playerTurn, gsk)
         }
 
     }
