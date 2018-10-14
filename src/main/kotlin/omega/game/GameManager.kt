@@ -27,7 +27,7 @@ object GameManager {
     private var stateHistory: LinkedList<State> = LinkedList()
 
     val playerColor = arrayOf("", "White", "Black", "Red", "Green")
-    val agents: ArrayList<Agent> = arrayListOf(HumanAgent(currentState), MiniMaxABAgent(currentState), RandomAgent(currentState), RandomAgent(currentState))
+    val agents: ArrayList<Agent> = arrayListOf(HumanAgent(currentState), MiniMaxTTAgent(currentState), RandomAgent(currentState), RandomAgent(currentState))
 
     fun changeBoardSize(size: Int) {
         boardSize = size

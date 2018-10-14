@@ -18,7 +18,7 @@ class NegaMaxABAgent(var initialState: State): Agent{
     var evaluator = SimpleScore()
     var gsk = GameSpecificKnowledge(initialState)
 
-    var maxDepth = 8
+    var maxDepth = 10
 
     override
     fun getAction(state: State): Action {

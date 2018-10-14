@@ -24,8 +24,20 @@ class Node (val tree: Tree, val state: State){
     }
 
     private fun addChildConnectionFromAction(action: Action){
+        childConnections.add(getNewEdgeFromAction(action))
+    }
+
+    fun getNewEdgeFromAction(action:Action): Edge{
         var newNode = Node(tree, state)
-        childConnections.add(Edge(action, this, newNode))
+        return Edge(action, this, newNode)
+    }
+
+    fun hasEdge(edge: Edge): Boolean{
+        return childConnections.any { it.move == edge.move }
+    }
+
+    fun getEdgeByAction(action: Action): Edge?{
+        return childConnections.firstOrNull { it.move == action }
     }
 
     fun gotToChild(edge: Edge){
