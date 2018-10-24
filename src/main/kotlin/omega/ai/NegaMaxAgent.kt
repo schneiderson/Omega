@@ -9,16 +9,15 @@ import omega.model.State
 import omega.searchtree.Node
 import omega.searchtree.Tree
 import omega.util.GameSpecificKnowledge
+import org.w3c.dom.xpath.XPathEvaluator
 import java.util.*
 import kotlin.system.measureTimeMillis
 
-class NegaMaxAgent(var initialState: State): Agent{
+class NegaMaxAgent(var initialState: State, var maxDepth: Int = 8, var evaluator: NodeEvaluation = SimpleScore()): Agent{
     fun <E> List<E>.getRandomElement() = this[Random().nextInt(this.size)]
 
-    var evaluator = SimpleScore()
+    override var agentName: String = "NegaMaxAgent"
     var gsk = GameSpecificKnowledge(initialState)
-
-    var maxDepth = 4
 
     override
     fun getAction(state: State): Action {
@@ -48,7 +47,7 @@ class NegaMaxAgent(var initialState: State): Agent{
         node.expand()
 
         var factor = 1
-        if(node.state.playerTurn != node.state.nextPlayersTurn()){
+        if(node.state.playerTurn != maximizingPlayer){
             factor = -1
         }
 

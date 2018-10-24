@@ -11,6 +11,7 @@ import java.util.*
 
 class GreedyAgent(var initialState: State) : Agent{
 
+    override var agentName: String = "GreedyAgent"
     fun <E> List<E>.getRandomElement() = this[Random().nextInt(this.size)]
     var evaluator: NodeEvaluation = SimpleScore()
     var gsk: GameSpecificKnowledge = GameSpecificKnowledge(initialState)

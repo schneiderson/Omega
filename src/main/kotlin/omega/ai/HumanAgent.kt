@@ -6,6 +6,8 @@ import omega.util.Coordinate
 
 class HumanAgent(var initialState: State): Agent{
 
+    override var agentName: String = "HumanAgent"
+
     override
     fun getAction(state: State): Action {
         // Dummy implementation

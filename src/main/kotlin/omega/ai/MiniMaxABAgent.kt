@@ -13,13 +13,11 @@ import omega.util.GameSpecificKnowledge
 import java.util.*
 import kotlin.system.measureTimeMillis
 
-class MiniMaxABAgent(var initialState: State): Agent{
+class MiniMaxABAgent(var initialState: State, var maxDepth: Int = 8, var evaluator: NodeEvaluation = SimpleScore()): Agent{
     fun <E> List<E>.getRandomElement() = this[Random().nextInt(this.size)]
 
-    var evaluator = SimpleScore2()
+    override var agentName: String = "MiniMaxABAgent"
     var gsk = GameSpecificKnowledge(initialState)
-    var maxDepth = 8
-
     override
     fun getAction(state: State): Action {
 

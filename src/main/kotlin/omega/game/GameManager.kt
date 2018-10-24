@@ -1,6 +1,7 @@
 package omega.game
 
 import omega.ai.*
+import omega.ai.evaluation.SimpleScore
 import omega.model.Action
 import omega.model.Cell
 import omega.model.State
@@ -27,7 +28,13 @@ object GameManager {
     private var stateHistory: LinkedList<State> = LinkedList()
 
     val playerColor = arrayOf("", "White", "Black", "Red", "Green")
-    val agents: ArrayList<Agent> = arrayListOf(HumanAgent(currentState), MiniMaxTTAgent(currentState), RandomAgent(currentState), RandomAgent(currentState))
+    val evalFunction = SimpleScore()
+    val maxDepth = 8
+    val agents: ArrayList<Agent> = arrayListOf(
+            HumanAgent(currentState),
+            MiniMaxIDAgent(currentState, maxDepth, evalFunction),
+            RandomAgent(currentState),
+            RandomAgent(currentState))
 
     fun changeBoardSize(size: Int) {
         boardSize = size
@@ -76,21 +83,27 @@ object GameManager {
 
 
     /* MOVE MANAGEMENT */
-    fun performMove(action: Action) {
+    fun performMove(action: Action, blocking: Boolean = false) {
         stateHistory.addLast(currentState)
         currentState = currentState.playMove(action)
-        getNextMove()
+        if(!gameEnd()){
+            getNextMove(blocking)
+        }
     }
 
-    fun getNextMove(){
+    fun getNextMove(blocking: Boolean = false){
         var player = getCurrentPlayer()
         var agent = agents.get(player - 1)
         if(agent is HumanAgent){
             // wait for UI input
         } else{
-            // get AI action in separate thread
-            thread {
-                performMove(agent.getAction(currentState.clone()))
+            if(!blocking){
+                // get AI action in separate thread
+                thread {
+                    performMove(agent.getAction(currentState.clone()))
+                }
+            } else{
+                performMove(agent.getAction(currentState.clone()), blocking)
             }
         }
     }
@@ -112,6 +125,15 @@ object GameManager {
     fun getPlayerScore(i: Int): Int {
         if (i > getNumberOfPlayers()) return 0
         return currentState.playerScores[i-1].score
+    }
+
+    fun runHeadless(): State{
+        getNextMove(true)
+        return currentState
+    }
+
+    fun resetGame() {
+        currentState = State(Grid(maxBoardSize - boardSize))
     }
 
     fun gameEnd(): Boolean{

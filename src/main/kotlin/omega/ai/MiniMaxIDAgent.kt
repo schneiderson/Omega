@@ -1,46 +1,71 @@
 package omega.ai
 
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.experimental.withTimeoutOrNull
 import omega.ai.evaluation.NodeEvaluation
 import omega.ai.evaluation.SimpleScore
-import omega.ai.evaluation.SimpleScore2
 import omega.model.Action
 import omega.model.State
 import omega.searchtree.Node
 import omega.searchtree.Tree
+import omega.util.Coordinate
 import omega.util.GameSpecificKnowledge
 import java.util.*
 import kotlin.system.measureTimeMillis
 
-class MiniMaxIDAgent(var initialState: State): Agent{
+class MiniMaxIDAgent(
+        var initialState: State,
+        var maxDepth: Int = 8,
+        var evaluator: NodeEvaluation = SimpleScore(),
+        var maxTime: Long = 10000
+): Agent{
+
     fun <E> List<E>.getRandomElement() = this[Random().nextInt(this.size)]
 
-    var evaluator = SimpleScore2()
+    override var agentName: String = "MiniMaxIDAgent"
     var gsk = GameSpecificKnowledge(initialState)
-    var maxDepth = 8
+    var depthReached = 0
 
     override
     fun getAction(state: State): Action {
 
         val tree = Tree(state)
         val root = tree.root
+        var action = Action.invalidAction
 
-        evaluate(root, maxDepth, state.playerTurn)
-
-        return root.getBestAction().move
-
-    }
-
-    fun evaluate(root: Node, depth: Int, maximizingPlayer: Int){
-        val timeElapsed = measureTimeMillis {
-            miniMax(root, depth, maximizingPlayer, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY)
+        runBlocking {
+            launch {
+                action = evaluate(root, state.playerTurn)
+            }.join()
         }
-        println("$timeElapsed")
 
+        return action
     }
 
-    fun miniMax(node: Node, depth: Int, maximizingPlayer: Int, alpha_init: Double, beta_init: Double): Double{
+    suspend fun evaluate(root: Node, maximizingPlayer: Int): Action{
+        var bestMove = Action.invalidAction
+
+        var currentDepth = 1
+        withTimeoutOrNull(maxTime) {
+            while(currentDepth <= maxDepth){
+                miniMax(root, currentDepth, maximizingPlayer, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY)
+
+                bestMove = root.getBestAction().move
+
+                depthReached = currentDepth
+                currentDepth++
+            }
+        }
+
+        return bestMove
+    }
+
+    suspend fun miniMax(node: Node, depth: Int, maximizingPlayer: Int, alpha_init: Double, beta_init: Double): Double{
+        // call delay to make coroutine interruptalbe
+        delay(1)
+
         if(depth == 0 || node.state.gameEnd())
             return evaluator.evaluate(node, maximizingPlayer, gsk)
 

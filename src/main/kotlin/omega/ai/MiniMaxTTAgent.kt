@@ -15,14 +15,13 @@ import omega.util.GameSpecificKnowledge
 import java.util.*
 import kotlin.system.measureTimeMillis
 
-class MiniMaxTTAgent(var initialState: State): Agent{
+class MiniMaxTTAgent(var initialState: State, var maxDepth: Int = 8, var evaluator: NodeEvaluation = SimpleScore()): Agent{
     fun <E> List<E>.getRandomElement() = this[Random().nextInt(this.size)]
 
-    var evaluator = SimpleScore()
+    override var agentName: String = "MiniMaxTTAgent"
     var gsk = GameSpecificKnowledge(initialState)
-    var maxDepth = 8
     var transpositionTable = TranspositionTable(initialState)
-    val invalidMove = Action(Coordinate(-1,-1), -3)
+    val invalidMove = Action.invalidAction
 
     var visists = 0
     var transposRetrievals = 0

@@ -12,13 +12,12 @@ import omega.util.GameSpecificKnowledge
 import java.util.*
 import kotlin.system.measureTimeMillis
 
-class NegaMaxABAgent(var initialState: State): Agent{
+class NegaMaxABAgent(var initialState: State, var maxDepth: Int = 8, var evaluator: NodeEvaluation = SimpleScore()): Agent{
     fun <E> List<E>.getRandomElement() = this[Random().nextInt(this.size)]
 
-    var evaluator = SimpleScore()
+    override var agentName: String = "NegaMaxABAgent"
     var gsk = GameSpecificKnowledge(initialState)
 
-    var maxDepth = 10
 
     override
     fun getAction(state: State): Action {
@@ -54,7 +53,7 @@ class NegaMaxABAgent(var initialState: State): Agent{
             var factor = 1
             var alpha_pass = alpha
             var beta_pass = beta
-            if(node.state.playerTurn != node.state.nextPlayersTurn()){
+            if(node.state.playerTurn != maximizingPlayer){
                 factor = -1
                 alpha_pass = beta * -1
                 beta_pass = alpha * -1
