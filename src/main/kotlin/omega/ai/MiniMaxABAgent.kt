@@ -1,25 +1,17 @@
 package omega.ai
 
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.runBlocking
 import omega.ai.evaluation.NodeEvaluation
 import omega.ai.evaluation.SimpleScore
-import omega.ai.evaluation.SimpleScore2
 import omega.model.Action
 import omega.model.State
 import omega.searchtree.Node
 import omega.searchtree.Tree
 import omega.util.GameSpecificKnowledge
-import java.util.*
-import kotlin.system.measureTimeMillis
 
 class MiniMaxABAgent(var initialState: State, var maxDepth: Int = 8, var evaluator: NodeEvaluation = SimpleScore()): Agent{
-    fun <E> List<E>.getRandomElement() = this[Random().nextInt(this.size)]
-
-    override var agentName: String = "MiniMaxABAgent"
+    override var agentName: String = "MiniMaxABAgent - ${evaluator.evalFuncName}"
     var gsk = GameSpecificKnowledge(initialState)
-    override
-    fun getAction(state: State): Action {
+    override fun getAction(state: State): Action {
 
         val tree = Tree(state)
         val root = tree.root
@@ -31,11 +23,7 @@ class MiniMaxABAgent(var initialState: State, var maxDepth: Int = 8, var evaluat
     }
 
     fun evaluate(root: Node, depth: Int, maximizingPlayer: Int){
-        val timeElapsed = measureTimeMillis {
-            miniMax(root, depth, maximizingPlayer, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY)
-        }
-        println("$timeElapsed")
-
+        miniMax(root, depth, maximizingPlayer, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY)
     }
 
     fun miniMax(node: Node, depth: Int, maximizingPlayer: Int, alpha_init: Double, beta_init: Double): Double{

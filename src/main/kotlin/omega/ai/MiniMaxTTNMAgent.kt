@@ -15,14 +15,15 @@ import omega.util.GameSpecificKnowledge
 import java.util.*
 import kotlin.system.measureTimeMillis
 
-class MiniMaxTTAgent(var initialState: State, var maxDepth: Int = 8, var evaluator: NodeEvaluation = SimpleScore()): Agent{
-    override var agentName: String = "MiniMaxTTAgent - ${evaluator.evalFuncName}"
+class MiniMaxTTNMAgent(var initialState: State, var maxDepth: Int = 8, var evaluator: NodeEvaluation = SimpleScore()): Agent{
+    override var agentName: String = "MiniMaxTTNMAgent - ${evaluator.evalFuncName}"
     var gsk = GameSpecificKnowledge(initialState)
     var transpositionTable = TranspositionTable(initialState)
     val invalidMove = Action.invalidAction
 
     var visists = 0
     var transposRetrievals = 0
+
 
     override
     fun getAction(state: State): Action {
@@ -65,12 +66,26 @@ class MiniMaxTTAgent(var initialState: State, var maxDepth: Int = 8, var evaluat
 
         node.expand()
 
+
+        // do null move
+        node.applyNullMove()
+        var nodeValue = miniMax(node, depth - 1, maximizingPlayer, alpha, beta)
+
+        if(maximizing){
+            value = maxOf(value, nodeValue)
+            alpha = maxOf(alpha, value)
+        } else {
+            value = minOf(value, nodeValue)
+            beta = minOf(beta, value)
+        }
+        node.undoNullMove()
+
+
         for(edge in node.childConnections){
             edge.toNode.score = value
 
             node.gotToChild(edge)
             var nodeValue = miniMax(edge.toNode, depth - 1, maximizingPlayer, alpha, beta)
-
 
             if(maximizing){
                 value = maxOf(value, nodeValue)

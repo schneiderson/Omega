@@ -7,34 +7,41 @@ import omega.model.Action
 import omega.model.Grid
 import omega.model.State
 import omega.util.Coordinate
+import kotlin.system.measureTimeMillis
 
 
 fun main(args: Array<String>){
 
-    var currentState = State(Grid(7))
+    var currentState = State(Grid(5))
 
-    var maxDepth = 5
+    var maxDepth = 4
 
     var evalFunc = SimpleScore2()
     var agentList = mutableListOf<Agent>()
     agentList.add(MiniMaxAgent(currentState, maxDepth, evalFunc))
     agentList.add(MiniMaxABAgent(currentState, maxDepth, evalFunc))
     agentList.add(MiniMaxTTAgent(currentState, maxDepth, evalFunc))
+    agentList.add(MiniMaxTTMOAgent(currentState, maxDepth, evalFunc))
+    agentList.add(MiniMaxTTNMAgent(currentState, maxDepth, evalFunc))
     agentList.add(NegaMaxAgent(currentState, maxDepth, evalFunc))
     agentList.add(NegaMaxABAgent(currentState, maxDepth, evalFunc))
 
     currentState = currentState.playMove(Action(Coordinate(8,7), 1))
     currentState = currentState.playMove(Action(Coordinate(10,10), 2))
 
-    var action = Action(Coordinate(-1,-1),-3)
-    val invalidAction = Action(Coordinate(-1,-1),-3)
+    var action = Action.invalidAction
+    val invalidAction = Action.invalidAction
+
     agentList.forEach{
-        var curr_action = it.getAction(currentState)
-        if(!action.equals(invalidAction) && !action.equals(curr_action)){
-            println("${it.agentName} selected a different Action!")
-        }else{
-            action = curr_action
+        var executionTime = measureTimeMillis {
+            var currAction = it.getAction(currentState)
+            if(!action.equals(invalidAction) && !action.equals(currAction)){
+                println("${it.agentName} selected a different Action! $currAction, instead of $action")
+            }else{
+                action = currAction
+            }
         }
+        println("${it.agentName} required $executionTime milliseconds")
     }
 
     println("Done")

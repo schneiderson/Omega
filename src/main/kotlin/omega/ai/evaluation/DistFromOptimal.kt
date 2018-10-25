@@ -4,8 +4,8 @@ import omega.searchtree.Node
 import omega.util.GameSpecificKnowledge
 import java.lang.Exception
 
-class SimpleScore2: NodeEvaluation{
-    override val evalFuncName = "SimpleScore2"
+class DistFromOptimal: NodeEvaluation{
+    override val evalFuncName = "DistFromOptimal"
 
     override fun evaluate(node: Node, scoresForPlayer: Int, gsk: GameSpecificKnowledge?): Double {
         var state = node.state
@@ -26,7 +26,6 @@ class SimpleScore2: NodeEvaluation{
 
             var roundsPlayed = node.state.getRoundsPlayed()
 
-//            var clusterWeight = (gsk.rounds + 1) / (roundsPlayed + 1)
             var weightShift = 1 - (gsk.rounds + 1) / (roundsPlayed + 1)
             var clusterWeight = 0.0 * weightShift
             var pointWeight = 1 - clusterWeight

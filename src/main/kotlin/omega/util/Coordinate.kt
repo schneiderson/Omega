@@ -1,5 +1,7 @@
 package omega.util
 
+import kotlin.math.abs
+
 data class Coordinate(private var x: Int, private var y: Int) {
 
     fun getX(): Int {
@@ -28,6 +30,12 @@ data class Coordinate(private var x: Int, private var y: Int) {
             return true
         }
         return false
+    }
+
+    fun getDistanceFromCoordinate(coordinate: Coordinate): Int {
+        var cube1 = getCubeCoordinates()
+        var cube2 = coordinate.getCubeCoordinates()
+        return maxOf(abs(cube1.x - cube2.x), abs(cube1.y - cube2.x), abs(cube1.z - cube2.z))
     }
 
     override fun toString(): String {

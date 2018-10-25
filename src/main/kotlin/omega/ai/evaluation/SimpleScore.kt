@@ -4,6 +4,8 @@ import omega.searchtree.Node
 import omega.util.GameSpecificKnowledge
 
 class SimpleScore: NodeEvaluation {
+    override val evalFuncName = "SimpleScore"
+
     override fun evaluate(node: Node, scoresForPlayer: Int, gsk: GameSpecificKnowledge?): Double {
         var state = node.state
         state.calcPlayerScores()

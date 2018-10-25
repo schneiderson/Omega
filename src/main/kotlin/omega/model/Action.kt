@@ -9,10 +9,11 @@ class Action(val coordinate: Coordinate, val cellType: Int) {
     }
 
     fun equals(action: Action): Boolean {
-        if(coordinate == action.coordinate && cellType == action.cellType){
-            return true
-        }
-        return false
+        return (coordinate == action.coordinate && cellType == action.cellType)
+    }
+
+    override fun toString(): String {
+        return "Coordinate: $coordinate, Cell-type: $cellType"
     }
 
 }

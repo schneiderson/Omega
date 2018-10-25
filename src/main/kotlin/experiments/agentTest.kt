@@ -22,8 +22,8 @@ fun main(args: Array<String>){
     currentState = currentState.playMove(Action(Coordinate(8,7), 1))
     currentState = currentState.playMove(Action(Coordinate(10,10), 2))
 
-    var action = Action(Coordinate(-1,-1),-3)
-    val invalidAction = Action(Coordinate(-1,-1),-3)
+    var action = Action.invalidAction
+    val invalidAction = Action.invalidAction
 
     action = agent.getAction(currentState)
 

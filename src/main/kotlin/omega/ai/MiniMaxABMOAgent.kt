@@ -9,30 +9,18 @@ import omega.model.Action
 import omega.model.State
 import omega.searchtree.Node
 import omega.searchtree.Tree
-import omega.transpositionTable.TranspositionTable
-import omega.util.Coordinate
 import omega.util.GameSpecificKnowledge
 import java.util.*
 import kotlin.system.measureTimeMillis
 
-class MiniMaxTTAgent(var initialState: State, var maxDepth: Int = 8, var evaluator: NodeEvaluation = SimpleScore()): Agent{
-    override var agentName: String = "MiniMaxTTAgent - ${evaluator.evalFuncName}"
+class MiniMaxABMOAgent(var initialState: State, var maxDepth: Int = 8, var evaluator: NodeEvaluation = SimpleScore()): Agent{
+    override var agentName: String = "MiniMaxABMOAgent - ${evaluator.evalFuncName}"
     var gsk = GameSpecificKnowledge(initialState)
-    var transpositionTable = TranspositionTable(initialState)
-    val invalidMove = Action.invalidAction
-
-    var visists = 0
-    var transposRetrievals = 0
-
     override
     fun getAction(state: State): Action {
 
         val tree = Tree(state)
-        transpositionTable = TranspositionTable(initialState)
         val root = tree.root
-
-        visists = 0
-        transposRetrievals = 0
 
         evaluate(root, maxDepth, state.playerTurn)
 
@@ -45,16 +33,6 @@ class MiniMaxTTAgent(var initialState: State, var maxDepth: Int = 8, var evaluat
     }
 
     fun miniMax(node: Node, depth: Int, maximizingPlayer: Int, alpha_init: Double, beta_init: Double): Double{
-
-        /* Start with transposition table lookup */
-        var moveInfo = transpositionTable.probeHash(node.state.grid.cells)
-        visists++
-        if(!moveInfo.move.equals(invalidMove)){
-            transposRetrievals ++
-            return moveInfo.value
-        }
-
-
         if(depth == 0 || node.state.gameEnd())
             return evaluator.evaluate(node, maximizingPlayer, gsk)
 
@@ -64,13 +42,16 @@ class MiniMaxTTAgent(var initialState: State, var maxDepth: Int = 8, var evaluat
         var value = if(maximizing) Double.NEGATIVE_INFINITY else Double.POSITIVE_INFINITY
 
         node.expand()
+        // order moves
+        node.childConnections.forEach { edge -> edge.toNode.score = evaluator.evaluate(node, maximizingPlayer, gsk)}
+        node.childConnections.sortedWith(compareBy { it.toNode.score })
 
         for(edge in node.childConnections){
             edge.toNode.score = value
 
             node.gotToChild(edge)
             var nodeValue = miniMax(edge.toNode, depth - 1, maximizingPlayer, alpha, beta)
-
+            edge.toNode.goToParent()
 
             if(maximizing){
                 value = maxOf(value, nodeValue)
@@ -79,11 +60,7 @@ class MiniMaxTTAgent(var initialState: State, var maxDepth: Int = 8, var evaluat
                 value = minOf(value, nodeValue)
                 beta = minOf(beta, value)
             }
-
             edge.toNode.score = value
-            /* save hash and value in transposition table */
-            transpositionTable.recordHash(edge.toNode.state.grid.cells, value, 0, edge.move)
-            edge.toNode.goToParent()
 
             if(alpha >= beta){
                 break

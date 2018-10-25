@@ -18,8 +18,8 @@ class Grid(
 
     private fun initialEmptyGrid() {
         var index = 0
-        for (j in 0.until(gridWidth)) {
-            for (i in 0.until(gridHeight)) {
+        0.until(gridWidth).forEach { j ->
+            0.until(gridHeight).forEach { i ->
                 var coordinate = Coordinate(i, j)
                 var cellType = getCellTypeByCoordinate(coordinate)
 
@@ -31,21 +31,17 @@ class Grid(
 
                 var cell = Cell(coordinate, cellType, currIndex)
 
-                if(cellType < 0){
-                    disabledCells.add(cell)
-                } else {
-                    cells.add(cell)
-                }
+                if(cellType < 0) disabledCells.add(cell) else cells.add(cell)
             }
         }
     }
 
     private fun getCellTypeByCoordinate(coordinate: Coordinate): Int {
-        var invisCells = 0
-        if (coordinate.getY() < 9) {
-            invisCells = 9 - coordinate.getY()
-        } else if (coordinate.getY() > 9) {
-            invisCells = coordinate.getY() - 9
+        var invisCells = 0// disabled
+        // invisible
+        when {
+            coordinate.getY() < 9 -> invisCells = 9 - coordinate.getY()
+            coordinate.getY() > 9 -> invisCells = coordinate.getY() - 9
         }
 
         var leftInvis = invisCells / 2 + invisCells % 2
@@ -71,46 +67,34 @@ class Grid(
 
     fun getCellByIndex(index: Int): Cell? {
         var cellFound: Cell? = null
-        for (cell in cells) {
-            if (cell.index == index) {
-                cellFound = cell
-            }
+        cells.forEach { cell ->
+            if (cell.index == index) cellFound = cell
         }
 
-        if (cellFound == null) {
-            throw Exception("Cell with index $index doesn't exist")
-        }
+        if (cellFound == null) throw Exception("Cell with index $index doesn't exist")
 
         return cellFound
     }
 
     fun getCellByCoordinates(c: Coordinate): Cell? {
         var cellFound: Cell? = null
-        for (cell in cells){
-            if(cell.coordinate == c){
-                cellFound = cell
-            }
+        cells.forEach { cell ->
+            if(cell.coordinate == c) cellFound = cell
         }
 
-        if (cellFound == null) {
-            throw Exception("Cell with coordinates $c doesn't exist")
-        }
+        if (cellFound == null) throw Exception("Cell with coordinates $c doesn't exist")
 
         return cellFound
     }
 
     fun getCellByAxialCoordinate(x: Int, y: Int): Cell? {
         var cellFound: Cell? = null
-        for (cell in cells){
+        cells.forEach { cell ->
             var axialCoordinate = cell.coordinate.getAxialCoordinates()
-            if(axialCoordinate.first == x && axialCoordinate.second == y){
-                cellFound = cell
-            }
+            if(axialCoordinate.first == x && axialCoordinate.second == y) cellFound = cell
         }
 
-        if (cellFound == null) {
-            throw Exception("Cell with axial coordinates X: x doesn't exist")
-        }
+        if (cellFound == null) throw Exception("Cell with axial coordinates X: x doesn't exist")
 
         return cellFound
     }
@@ -119,7 +103,7 @@ class Grid(
         var axC = cell.coordinate.getAxialCoordinates()
         var neighbours: ArrayList<Cell> = ArrayList()
 
-        for(i in 1..6){
+        (1..6).forEach { i ->
             var axOff = getAxialOffset(i, axC.first, axC.second)
             var neighbour: Cell? = null
             try {
@@ -127,9 +111,7 @@ class Grid(
             } catch(e: java.lang.Exception){
                 // do nothing
             }
-            if(neighbour != null){
-                neighbours.add(neighbour)
-            }
+            if(neighbour != null) neighbours.add(neighbour)
         }
         return neighbours
     }
@@ -140,7 +122,7 @@ class Grid(
 
         if(!ignoreCells.contains(cell)){
             cluster.add(cell)
-            for(n in neighbours){
+            neighbours.forEach { n ->
                 if(cell.cellType == n.cellType && !ignoreCells.contains(n)) {
                     var newIgnoreCells = ArrayList<Cell>()
                     newIgnoreCells.addAll(ignoreCells)
@@ -164,7 +146,7 @@ class Grid(
         var clusters = ArrayList<ArrayList<Cell>>()
         var visited = ArrayList<Cell>()
 
-        for(cell in cells){
+        cells.forEach { cell ->
             if(cell.cellType == playerScore.player && !visited.contains(cell)){
 
                 var cluster = getCellCluster(cell, visited)
@@ -177,7 +159,7 @@ class Grid(
         }
 
         var score = 0
-        for(c in clusters){
+        clusters.forEach { c ->
             if(score == 0) score = c.size
             else score *= c.size
         }
@@ -188,10 +170,8 @@ class Grid(
 
     fun getFreeCells(): ArrayList<Cell>{
         var freeCells = ArrayList<Cell>()
-        for(cell in cells){
-            if(cell.cellType == 0){
-                freeCells.add(cell)
-            }
+        cells.forEach { cell ->
+            if(cell.cellType == 0) freeCells.add(cell)
         }
         return freeCells
     }
@@ -211,7 +191,7 @@ class Grid(
 
     fun deepCopy(): Grid {
         var newCells: ArrayList<Cell> = ArrayList()
-        for (cell in cells) {
+        cells.forEach { cell ->
             newCells.add(cell.copy())
         }
         return Grid(disabledRows, newCells, disabledCells)
@@ -223,8 +203,6 @@ class Grid(
         allCells.addAll(disabledCells)
         return allCells
     }
-
-
 
 
 }

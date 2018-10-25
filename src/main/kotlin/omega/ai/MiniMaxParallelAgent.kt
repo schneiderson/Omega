@@ -8,20 +8,14 @@ import omega.model.Action
 import omega.model.State
 import omega.searchtree.Node
 import omega.searchtree.Tree
+import omega.util.GameSpecificKnowledge
 import java.util.*
 import kotlin.system.measureTimeMillis
 
-class MiniMaxParallelAgent(): Agent{
-    fun <E> List<E>.getRandomElement() = this[Random().nextInt(this.size)]
-
-    override var agentName: String = "MiniMaxParallelAgent"
-    var evaluator: NodeEvaluation
-    var maxDepth = 5
+class MiniMaxParallelAgent(var initialState: State, var maxDepth: Int = 8, var evaluator: NodeEvaluation = SimpleScore()): Agent{
+    override var agentName: String = "MiniMaxParallelAgent - ${evaluator.evalFuncName}"
     var executeAsync = true
-
-    init {
-        evaluator = SimpleScore()
-    }
+    var gsk = GameSpecificKnowledge(initialState)
 
     override
     fun getAction(state: State): Action {
@@ -36,53 +30,50 @@ class MiniMaxParallelAgent(): Agent{
     }
 
     fun evaluate(root: Node, depth: Int, maximizingPlayer: Int){
-        root.expand()
+        miniMax(root, depth, maximizingPlayer)
 
-
-
-        val timeElapsed = measureTimeMillis {
-            if(executeAsync){
-                val deferred = (root.childConnections).map { n ->
-                    async {
-                        n.toNode.score = miniMax(n.toNode, depth - 1, maximizingPlayer)
-                    }
-                }
-
-                runBlocking {
-                    deferred.forEach {
-                        it.await()
-                    }
-                }
-            }
-            else{
-                for(edge in root.childConnections) {
-                    edge.toNode.score = miniMax(edge.toNode, depth - 1, maximizingPlayer)
-                }
-            }
-        }
-        println("$timeElapsed")
+//        val timeElapsed = measureTimeMillis {
+//            if(executeAsync){
+//                val deferred = (root.childConnections).map { n ->
+//                    async {
+//                        n.toNode.score = miniMax(n.toNode, depth - 1, maximizingPlayer)
+//                    }
+//                }
+//
+//                runBlocking {
+//                    deferred.forEach {
+//                        it.await()
+//                    }
+//                }
+//            }
+//            else{
+//                for(edge in root.childConnections) {
+//                    edge.toNode.score = miniMax(edge.toNode, depth - 1, maximizingPlayer)
+//                }
+//            }
+//        }
 
     }
 
     fun miniMax(node: Node, depth: Int, maximizingPlayer: Int): Double{
-        var value = Double.NEGATIVE_INFINITY
-        var parentNode = node.parentConnections.get(0).fromNode
         if(depth == 0 || node.state.gameEnd())
-            return evaluator.evaluate(node, maximizingPlayer, null)
-        else if(parentNode.state.playerTurn == maximizingPlayer){
-            node.expand()
-            for(edge in node.childConnections){
-                var nodeValue = miniMax(edge.toNode, depth - 1, maximizingPlayer)
-                value = maxOf(value, nodeValue)
-            }
-        } else {
-            value = Double.POSITIVE_INFINITY
-            node.expand()
-            for(edge in node.childConnections){
-                var nodeValue = miniMax(edge.toNode, depth - 1, maximizingPlayer)
-                value = minOf(value, nodeValue)
-            }
+            return evaluator.evaluate(node, maximizingPlayer, gsk)
+
+        node.expand()
+        var maximizing = node.state.playerTurn == maximizingPlayer
+        var value = if(maximizing) Double.NEGATIVE_INFINITY else Double.POSITIVE_INFINITY
+
+        for(edge in node.childConnections){
+            edge.toNode.score = value
+
+            node.gotToChild(edge)
+            var nodeValue = miniMax(edge.toNode, depth - 1, maximizingPlayer)
+            edge.toNode.goToParent()
+
+            value = if(maximizing) maxOf(value, nodeValue) else minOf(value, nodeValue)
+            edge.toNode.score = value
         }
+
         return value
     }
 }

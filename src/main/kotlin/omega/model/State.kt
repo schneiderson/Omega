@@ -1,5 +1,7 @@
 package omega.model
 
+import kotlin.math.pow
+
 
 class State(var grid: Grid = Grid(), var playerTurn: Int = 1, var colorToPlay: Int = 1) {
 
@@ -18,9 +20,7 @@ class State(var grid: Grid = Grid(), var playerTurn: Int = 1, var colorToPlay: I
         var newGrid = grid.deepCopy()
         try {
             var newCell = newGrid.getCellByCoordinates(move.coordinate)
-            if (newCell != null) {
-                newCell.cellType = move.cellType
-            }
+            if (newCell != null) newCell.cellType = move.cellType
         } catch (e: Exception) {
             println(e.message)
         }
@@ -92,7 +92,7 @@ class State(var grid: Grid = Grid(), var playerTurn: Int = 1, var colorToPlay: I
 
     fun gameEnd(): Boolean{
         if(playerTurn == 1 && colorToPlay == 1){
-            return grid.getFreeCells().size < (players * 2)
+            return grid.getFreeCells().size < (players.toDouble().pow(players))
         }
         return false
     }

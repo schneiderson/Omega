@@ -15,8 +15,8 @@ import omega.util.GameSpecificKnowledge
 import java.util.*
 import kotlin.system.measureTimeMillis
 
-class MiniMaxTTAgent(var initialState: State, var maxDepth: Int = 8, var evaluator: NodeEvaluation = SimpleScore()): Agent{
-    override var agentName: String = "MiniMaxTTAgent - ${evaluator.evalFuncName}"
+class MiniMaxTTMOAgent(var initialState: State, var maxDepth: Int = 8, var evaluator: NodeEvaluation = SimpleScore()): Agent{
+    override var agentName: String = "MiniMaxTTMOAgent - ${evaluator.evalFuncName}"
     var gsk = GameSpecificKnowledge(initialState)
     var transpositionTable = TranspositionTable(initialState)
     val invalidMove = Action.invalidAction
@@ -54,7 +54,6 @@ class MiniMaxTTAgent(var initialState: State, var maxDepth: Int = 8, var evaluat
             return moveInfo.value
         }
 
-
         if(depth == 0 || node.state.gameEnd())
             return evaluator.evaluate(node, maximizingPlayer, gsk)
 
@@ -64,6 +63,7 @@ class MiniMaxTTAgent(var initialState: State, var maxDepth: Int = 8, var evaluat
         var value = if(maximizing) Double.NEGATIVE_INFINITY else Double.POSITIVE_INFINITY
 
         node.expand()
+        orderMoves(node, maximizingPlayer)
 
         for(edge in node.childConnections){
             edge.toNode.score = value
@@ -91,5 +91,21 @@ class MiniMaxTTAgent(var initialState: State, var maxDepth: Int = 8, var evaluat
         }
 
         return value
+    }
+
+    fun orderMoves(node: Node, maximizingPlayer: Int){
+        node.childConnections.forEach { edge ->
+            node.gotToChild(edge)
+            var moveInfo = transpositionTable.probeHash(node.state.grid.cells)
+            if(!moveInfo.move.equals(invalidMove)){
+                edge.toNode.score = moveInfo.value
+            } else {
+                edge.toNode.score = evaluator.evaluate(node, maximizingPlayer, gsk)
+            }
+            edge.toNode.goToParent()
+        }
+
+        node.childConnections.sortedWith(compareBy { it.toNode.score })
+
     }
 }

@@ -2,6 +2,7 @@ package omega.game
 
 import omega.ai.*
 import omega.ai.evaluation.SimpleScore
+import omega.ai.evaluation.SimpleScore2
 import omega.model.Action
 import omega.model.Cell
 import omega.model.State
@@ -14,7 +15,7 @@ import kotlin.concurrent.thread
 import kotlin.properties.Delegates
 
 object GameManager {
-    var boardSize: Int = 3
+    var boardSize: Int = 5
     val maxBoardSize: Int = 10
 
     var stateChangeListener: StateChangeListener? = null
@@ -28,11 +29,12 @@ object GameManager {
     private var stateHistory: LinkedList<State> = LinkedList()
 
     val playerColor = arrayOf("", "White", "Black", "Red", "Green")
-    val evalFunction = SimpleScore()
-    val maxDepth = 8
+    val evalFunction = SimpleScore2()
+    val maxDepth = 6
     val agents: ArrayList<Agent> = arrayListOf(
             HumanAgent(currentState),
-            MiniMaxIDAgent(currentState, maxDepth, evalFunction),
+//            HumanAgent(currentState),
+            MiniMaxTTAgent(currentState, maxDepth, evalFunction),
             RandomAgent(currentState),
             RandomAgent(currentState))
 
@@ -86,9 +88,7 @@ object GameManager {
     fun performMove(action: Action, blocking: Boolean = false) {
         stateHistory.addLast(currentState)
         currentState = currentState.playMove(action)
-        if(!gameEnd()){
-            getNextMove(blocking)
-        }
+        if(!gameEnd()) getNextMove(blocking)
     }
 
     fun getNextMove(blocking: Boolean = false){

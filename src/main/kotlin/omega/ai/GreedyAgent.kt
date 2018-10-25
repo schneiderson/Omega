@@ -10,10 +10,8 @@ import omega.util.GameSpecificKnowledge
 import java.util.*
 
 class GreedyAgent(var initialState: State) : Agent{
-
-    override var agentName: String = "GreedyAgent"
-    fun <E> List<E>.getRandomElement() = this[Random().nextInt(this.size)]
     var evaluator: NodeEvaluation = SimpleScore()
+    override var agentName: String = "GreedyAgent - ${evaluator.evalFuncName}"
     var gsk: GameSpecificKnowledge = GameSpecificKnowledge(initialState)
 
     override
@@ -23,18 +21,16 @@ class GreedyAgent(var initialState: State) : Agent{
         val root = tree.root
 
         root.expand()
-        evaluate(root)
+        evaluate(root, root.state.playerTurn)
 
         return root.getBestAction().move
     }
 
-    fun evaluate(node: Node){
-        var playerTurn = node.state.playerTurn
-
-//        node.score = evaluator.evaluate(node, playerTurn, gsk)
-
+    fun evaluate(node: Node, maximizingPlayer: Int){
         for(edge in node.childConnections){
-            edge.toNode.score = evaluator.evaluate(edge.toNode, playerTurn, gsk)
+            node.gotToChild(edge)
+            edge.toNode.score = evaluator.evaluate(edge.toNode, maximizingPlayer, gsk)
+            edge.toNode.goToParent()
         }
 
     }

@@ -8,12 +8,9 @@ import omega.searchtree.Node
 import omega.searchtree.Tree
 import omega.util.GameSpecificKnowledge
 import java.util.*
-import kotlin.system.measureTimeMillis
 
 class MiniMaxAgent(var initialState: State, var maxDepth: Int = 8, var evaluator: NodeEvaluation = SimpleScore()): Agent{
-    fun <E> List<E>.getRandomElement() = this[Random().nextInt(this.size)]
-
-    override var agentName: String = "MiniMaxAgent"
+    override var agentName: String = "MiniMaxAgent - ${evaluator.evalFuncName}"
     var gsk = GameSpecificKnowledge(initialState)
 
     override
@@ -29,9 +26,7 @@ class MiniMaxAgent(var initialState: State, var maxDepth: Int = 8, var evaluator
     }
 
     fun evaluate(root: Node, depth: Int, maximizingPlayer: Int){
-        val timeElapsed = measureTimeMillis {
-            miniMax(root, depth, maximizingPlayer)
-        }
+        miniMax(root, depth, maximizingPlayer)
     }
 
     fun miniMax(node: Node, depth: Int, maximizingPlayer: Int): Double{
@@ -42,7 +37,7 @@ class MiniMaxAgent(var initialState: State, var maxDepth: Int = 8, var evaluator
         var maximizing = node.state.playerTurn == maximizingPlayer
         var value = if(maximizing) Double.NEGATIVE_INFINITY else Double.POSITIVE_INFINITY
 
-        for(edge in node.childConnections){
+        node.childConnections.forEach { edge ->
             edge.toNode.score = value
 
             node.gotToChild(edge)

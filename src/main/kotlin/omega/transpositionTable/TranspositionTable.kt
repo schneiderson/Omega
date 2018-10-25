@@ -3,9 +3,7 @@ package omega.transpositionTable
 import omega.model.Action
 import omega.model.Cell
 import omega.model.State
-import omega.util.Coordinate
 import java.util.Random
-
 
 class TranspositionTable (var initialState: State){
     fun array2dOfLong(sizeOuter: Int, sizeInner: Int) = Array(sizeOuter) { LongArray(sizeInner) }
@@ -18,8 +16,8 @@ class TranspositionTable (var initialState: State){
     init {
         // init zobrist random values
         val r = Random()
-        for (colors in 0 until initialState.players-1) {
-            for (tile in 0 until initialState.grid.cells.size-1) {
+        for (colors in 0 until initialState.players) {
+            for (tile in 0 until initialState.grid.cells.size) {
                 zobristRandom[colors][tile] = r.nextLong()
             }
         }
@@ -32,7 +30,7 @@ class TranspositionTable (var initialState: State){
             return te!!.moveInfo
         }
         /* return invalid action */
-        return MoveInfo(0.0, Action(Coordinate(-1, -1), -3))
+        return MoveInfo(0.0, Action.invalidAction)
     }
 
     fun recordHash(cells: ArrayList<Cell>, value: Double, flags: Int, move: Action){

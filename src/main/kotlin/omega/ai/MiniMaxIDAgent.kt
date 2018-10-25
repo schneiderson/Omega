@@ -21,10 +21,7 @@ class MiniMaxIDAgent(
         var evaluator: NodeEvaluation = SimpleScore(),
         var maxTime: Long = 10000
 ): Agent{
-
-    fun <E> List<E>.getRandomElement() = this[Random().nextInt(this.size)]
-
-    override var agentName: String = "MiniMaxIDAgent"
+    override var agentName: String = "MiniMaxIDAgent - ${evaluator.evalFuncName}"
     var gsk = GameSpecificKnowledge(initialState)
     var depthReached = 0
 

@@ -53,6 +53,16 @@ class Node (val tree: Tree, val state: State){
         state.undoSimulatedMove(parentEdge.move)
     }
 
+    fun applyNullMove(){
+        state.playerTurn = state.nextPlayersTurn()
+        state.colorToPlay = state.nextColorToPlay()
+    }
+
+    fun undoNullMove(){
+        state.playerTurn = state.previousPlayersTurn()
+        state.colorToPlay = state.previousColorToPlay()
+    }
+
     fun getBestAction(): Edge{
         var highScore = Double.NEGATIVE_INFINITY
         var highScorer = childConnections.get(0)

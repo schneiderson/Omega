@@ -13,9 +13,7 @@ import java.util.*
 import kotlin.system.measureTimeMillis
 
 class NegaMaxABAgent(var initialState: State, var maxDepth: Int = 8, var evaluator: NodeEvaluation = SimpleScore()): Agent{
-    fun <E> List<E>.getRandomElement() = this[Random().nextInt(this.size)]
-
-    override var agentName: String = "NegaMaxABAgent"
+    override var agentName: String = "NegaMaxABAgent - ${evaluator.evalFuncName}"
     var gsk = GameSpecificKnowledge(initialState)
 
 
@@ -32,11 +30,7 @@ class NegaMaxABAgent(var initialState: State, var maxDepth: Int = 8, var evaluat
     }
 
     fun evaluate(root: Node, depth: Int, maximizingPlayer: Int){
-        val timeElapsed = measureTimeMillis {
-            negaMax(root, depth , maximizingPlayer, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY)
-        }
-        println("$timeElapsed")
-
+        negaMax(root, depth , maximizingPlayer, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY)
     }
 
     fun negaMax(node: Node, depth: Int, maximizingPlayer: Int, alpha_init: Double, beta_init: Double): Double{
