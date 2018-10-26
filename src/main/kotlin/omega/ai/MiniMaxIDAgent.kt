@@ -60,7 +60,7 @@ class MiniMaxIDAgent(
     }
 
     suspend fun miniMax(node: Node, depth: Int, maximizingPlayer: Int, alpha_init: Double, beta_init: Double): Double{
-        // call delay to make coroutine interruptalbe
+        // delay by 1 ms to make coroutine interruptalbe
         delay(1)
 
         if(depth == 0 || node.state.gameEnd())

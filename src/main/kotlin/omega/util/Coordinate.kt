@@ -2,6 +2,12 @@ package omega.util
 
 import kotlin.math.abs
 
+/**
+ * Coordinate helper class
+ *
+ * has an x and y coordinate.
+ * Also enables the conversion in cubic and axial coordinates
+ */
 data class Coordinate(private var x: Int, private var y: Int) {
 
     fun getX(): Int {

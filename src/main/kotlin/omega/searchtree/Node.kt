@@ -13,7 +13,6 @@ class Node (val tree: Tree, val state: State){
 
     var score: Double = 0.0
 
-
     fun expand(){
         if(!isExpanded){
             for(action in state.getLegalActions()){
@@ -22,6 +21,8 @@ class Node (val tree: Tree, val state: State){
             isExpanded = true
         }
     }
+
+
 
     private fun addChildConnectionFromAction(action: Action){
         childConnections.add(getNewEdgeFromAction(action))

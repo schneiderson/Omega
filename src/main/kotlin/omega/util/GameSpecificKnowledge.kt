@@ -3,6 +3,12 @@ package omega.util
 import omega.model.State
 import kotlin.math.pow
 
+/**
+ * Game specific knowledge helper class
+ *
+ * Provides some game specific information
+ * This way it doesn't have to be recalculated in the evaluation function or state
+ */
 class GameSpecificKnowledge (state: State){
 
     var tilesToPlay = state.grid.cells.size

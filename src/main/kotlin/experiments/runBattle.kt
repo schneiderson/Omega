@@ -12,15 +12,16 @@ fun main(args: Array<String>){
     var evalFunc2 = SimpleScore2()
 
     var gm = GameManager
-    var x = 100
+    var x = 1
     var maxdepth = 4
-    var boardSize = 5
+    var maxtime = 3000L
+    var boardSize = 3
 
     gm.changeBoardSize(boardSize)
 
-    var agent1 = MiniMaxTTAgent(gm.currentState, maxdepth, evalFunc1)
-    var agent2 = MiniMaxTTAgent(gm.currentState, maxdepth, evalFunc2)
-//    var agent2 = RandomAgent(gm.currentState)
+    var agent1 = MiniMaxIDAgent(gm.currentState, 10, evalFunc1, maxtime)
+//    var agent2 = MiniMaxTTAgent(gm.currentState, maxdepth, evalFunc1)
+    var agent2 = RandomAgent(gm.currentState)
 
 //    gm.agents[1] = GreedyAgent(gm.currentState)
 

@@ -8,12 +8,17 @@ import javafx.scene.shape.Polygon
 import javafx.scene.input.MouseEvent
 import tornadofx.*
 
+/**
+ * Hexagon tile class
+ *
+ * (UI fragment)
+ */
 class Hexagon : Polygon {
     var size: Double
     var cell: Cell
     var strokeSize: Double
 
-    private lateinit var controller: ViewController // TODO: create own omega.controller
+    private lateinit var controller: ViewController
 
     companion object {
         val INDENTATION = 50
@@ -48,6 +53,7 @@ class Hexagon : Polygon {
         repaint(size)
     }
 
+    // rendering function for the Hexagon
     private fun repaint(size: Double) {
         var corners: ArrayList<Double> = getCorners(size)
         points.setAll(corners)

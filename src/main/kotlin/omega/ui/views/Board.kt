@@ -8,6 +8,9 @@ import javafx.scene.input.MouseEvent
 import tornadofx.*
 import javafx.scene.layout.Pane
 
+/**
+ * Board view containing the hex-grid
+ */
 class BoardView : View("Board") {
     override val root = Pane()
     private val controller: ViewController by inject()

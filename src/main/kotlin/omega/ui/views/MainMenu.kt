@@ -6,6 +6,9 @@ import omega.game.Styles
 import omega.controller.ViewController
 import tornadofx.*
 
+/**
+ * Main menu on entry screen
+ */
 class MainMenuView : View("Omega") {
     private val controller: ViewController by inject()
     override val root = VBox()

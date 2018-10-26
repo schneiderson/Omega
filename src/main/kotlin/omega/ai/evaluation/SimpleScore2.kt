@@ -26,20 +26,27 @@ class SimpleScore2: NodeEvaluation{
 
             var roundsPlayed = node.state.getRoundsPlayed()
 
-//            var clusterWeight = (gsk.rounds + 1) / (roundsPlayed + 1)
-            var weightShift = 1 - (gsk.rounds + 1) / (roundsPlayed + 1)
-            var clusterWeight = 0.0 * weightShift
-            var pointWeight = 1 - clusterWeight
+            var clusterWeight = 1
+
+            var pointWeight = 0
+            if(gsk.rounds - roundsPlayed < 3){
+                var pointWeight = 1
+                var clusterWeight = 0
+            }
 
             var clusterScorePlayer = playerClusters.size - gsk.numClustersUpperBound
+            var avgClusterSizePlayer = 0
+            playerClusters.forEach { avgClusterSizePlayer += it.size }
+            avgClusterSizePlayer /= clusterScorePlayer
             var pointScorePlayer = playerScore.score - gsk.pointsUpperBound
+
+
 
             var clusterScoreOpponent = gsk.numClustersUpperBound - opponentClusters.size
             var pointScoreOpponent = gsk.pointsUpperBound - opponentScore.score
 
-//            score = clusterWeight * clusterScorePlayer + pointWeight * pointScorePlayer -
-//                    (clusterWeight * clusterScoreOpponent + pointWeight * pointScoreOpponent)
-            score = clusterWeight * clusterScorePlayer + pointWeight * pointScorePlayer
+
+            score = clusterWeight * ( clusterScorePlayer  )  + pointWeight * pointScorePlayer
 
 
         } else {

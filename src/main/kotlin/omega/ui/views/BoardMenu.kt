@@ -5,6 +5,9 @@ import javafx.scene.control.Label
 import omega.controller.ViewController
 import tornadofx.*
 
+/**
+ * Board menu
+ */
 class BoardMenuView : View("Board menu") {
     private val controller: ViewController by inject()
 

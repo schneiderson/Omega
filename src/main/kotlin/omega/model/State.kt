@@ -1,5 +1,6 @@
 package omega.model
 
+import omega.util.CombinedAction
 import kotlin.math.pow
 
 
@@ -99,6 +100,19 @@ class State(var grid: Grid = Grid(), var playerTurn: Int = 1, var colorToPlay: I
 
     fun getLegalActions(): List<Action>{
         return grid.getFreeCells().map{ Action(it.coordinate, colorToPlay) }
+    }
+
+    fun getLegalCombinedActions(): List<CombinedAction>{
+        var combActionList = ArrayList<CombinedAction>()
+        var firstAction = grid.getFreeCells().map{ Action(it.coordinate, colorToPlay) }
+        firstAction.forEach {
+            simulateMove(it)
+            grid.getFreeCells().map { cell ->
+                combActionList.add( CombinedAction( it, Action(cell.coordinate, colorToPlay) ) )
+            }
+            undoSimulatedMove(it)
+        }
+        return combActionList
     }
 
     fun getOpponent(player: Int): Int{

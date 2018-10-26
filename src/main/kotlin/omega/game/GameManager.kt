@@ -7,7 +7,6 @@ import omega.model.Action
 import omega.model.Cell
 import omega.model.State
 import omega.model.Grid
-import omega.util.GameSpecificKnowledge
 import omega.util.StateChangeListener
 import java.util.*
 import kotlin.collections.ArrayList

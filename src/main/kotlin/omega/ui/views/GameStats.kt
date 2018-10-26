@@ -9,6 +9,9 @@ import omega.ui.fragments.Hexagon
 import omega.util.Coordinate
 import tornadofx.*
 
+/**
+ * Game stats view
+ */
 class GameStatsView : View("Game Stats") {
     private val controller: ViewController by inject()
 

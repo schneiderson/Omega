@@ -26,7 +26,9 @@ fun main(args: Array<String>){
     println("Max 2-groups: $theoreticNumberOfTwoGroups")
     println("Max 3-groups: $theoreticNumberOfThreeGroups")
 
-    var maxPoints =  maxOf(2.0.pow(theoreticNumberOfTwoGroups), 3.0.pow(theoreticNumberOfThreeGroups) * remainder )
+    println("Cluster size-2 points: " + 2.0.pow(theoreticNumberOfTwoGroups))
+    println("Cluster size-3 points: " + 3.0.pow(theoreticNumberOfThreeGroups) * (remainder + 1))
+    var maxPoints =  maxOf(2.0.pow(theoreticNumberOfTwoGroups), 3.0.pow(theoreticNumberOfThreeGroups) * (remainder + 1) )
 
     println("Max points: $maxPoints")
 
