@@ -79,7 +79,7 @@ class Grid(
     fun getCellByCoordinates(c: Coordinate): Cell? {
         var cellFound: Cell? = null
         cells.forEach { cell ->
-            if(cell.coordinate == c) cellFound = cell
+            if(cell.coordinate.equals(c)) cellFound = cell
         }
 
         if (cellFound == null) throw Exception("Cell with coordinates $c doesn't exist")

@@ -5,8 +5,8 @@ import kotlin.math.pow
 
 
 fun main(args: Array<String>){
-    var boardSize: Int = 5
-    val maxBoardSize: Int = 10
+    var boardSize = 5
+    val maxBoardSize = 10
 
     var grid = Grid(maxBoardSize - boardSize)
 

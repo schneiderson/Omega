@@ -1,12 +1,12 @@
 package omega.game
 
 import omega.ai.*
-import omega.ai.evaluation.SimpleScore
 import omega.ai.evaluation.SimpleScore2
 import omega.model.Action
 import omega.model.Cell
 import omega.model.State
 import omega.model.Grid
+import omega.model.CombinedAction
 import omega.util.StateChangeListener
 import java.util.*
 import kotlin.collections.ArrayList
@@ -15,13 +15,13 @@ import kotlin.properties.Delegates
 
 object GameManager {
     var boardSize: Int = 5
-    val maxBoardSize: Int = 10
+    const val maxBoardSize: Int = 10
 
     var stateChangeListener: StateChangeListener? = null
     var currentState: State by Delegates.observable(
             State(Grid(maxBoardSize - boardSize)),
             onChange = {
-                prop, old, new ->
+                _, _, new ->
                 if(stateChangeListener != null) stateChangeListener!!.onValueChanged(new)
             }
     )
@@ -29,7 +29,7 @@ object GameManager {
 
     val playerColor = arrayOf("", "White", "Black", "Red", "Green")
     val evalFunction = SimpleScore2()
-    val maxDepth = 6
+    const val maxDepth = 6
     val agents: ArrayList<Agent> = arrayListOf(
             HumanAgent(currentState),
 //            HumanAgent(currentState),
@@ -78,13 +78,13 @@ object GameManager {
 
     fun currentPlayerIsHuman(): Boolean{
         var player = getCurrentPlayer()
-        var agent = agents.get(player - 1)
+        var agent = agents[player - 1]
         return agent is HumanAgent
     }
 
 
     /* MOVE MANAGEMENT */
-    fun performMove(action: Action, blocking: Boolean = false) {
+    fun performMove(action: CombinedAction, blocking: Boolean = false) {
         stateHistory.addLast(currentState)
         currentState = currentState.playMove(action)
         if(!gameEnd()) getNextMove(blocking)
@@ -92,7 +92,7 @@ object GameManager {
 
     fun getNextMove(blocking: Boolean = false){
         var player = getCurrentPlayer()
-        var agent = agents.get(player - 1)
+        var agent = agents[player - 1]
         if(agent is HumanAgent){
             // wait for UI input
         } else{
@@ -108,7 +108,7 @@ object GameManager {
     }
 
     fun performMove(cell: Cell) {
-        performMove(Action(cell.coordinate, currentState.colorToPlay))
+        performMove(CombinedAction.getCombinedAction(Action(cell.coordinate, currentState.colorToPlay)))
     }
 
     fun undoMove() {

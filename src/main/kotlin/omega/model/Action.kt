@@ -9,7 +9,7 @@ class Action(val coordinate: Coordinate, val cellType: Int) {
     }
 
     fun equals(action: Action): Boolean {
-        return (coordinate == action.coordinate && cellType == action.cellType)
+        return (coordinate.equals(action.coordinate) && cellType == action.cellType)
     }
 
     override fun toString(): String {

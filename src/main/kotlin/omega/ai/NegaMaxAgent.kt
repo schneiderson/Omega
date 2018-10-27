@@ -1,26 +1,27 @@
 package omega.ai
 
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.runBlocking
 import omega.ai.evaluation.NodeEvaluation
 import omega.ai.evaluation.SimpleScore
-import omega.model.Action
 import omega.model.State
 import omega.searchtree.Node
 import omega.searchtree.Tree
+import omega.model.CombinedAction
 import omega.util.GameSpecificKnowledge
-import org.w3c.dom.xpath.XPathEvaluator
-import java.util.*
 import kotlin.system.measureTimeMillis
 
-class NegaMaxAgent(var initialState: State, var maxDepth: Int = 8, var evaluator: NodeEvaluation = SimpleScore()): Agent{
+class NegaMaxAgent(
+        var initialState: State,
+        var maxDepth: Int = 8,
+        var evaluator: NodeEvaluation = SimpleScore(),
+        var combinedActions: Boolean = false
+): Agent{
     override var agentName: String = "NegaMaxAgent - ${evaluator.evalFuncName}"
     var gsk = GameSpecificKnowledge(initialState)
 
     override
-    fun getAction(state: State): Action {
+    fun getAction(state: State): CombinedAction {
 
-        val tree = Tree(state)
+        val tree = Tree(state, combinedActions)
         val root = tree.root
 
         evaluate(root, maxDepth, state.playerTurn)

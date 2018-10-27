@@ -1,6 +1,7 @@
 package experiments
 
 import omega.ai.*
+import omega.ai.evaluation.SimpleScore
 import omega.ai.evaluation.SimpleScore2
 import omega.model.Action
 import omega.model.CombinedAction
@@ -14,17 +15,17 @@ fun main(args: Array<String>){
 
     var currentState = State(Grid(7))
 
-    var maxDepth = 4
+    var maxDepth = 2
 
-    var evalFunc = SimpleScore2()
+    var evalFunc = SimpleScore()
     var agentList = mutableListOf<Agent>()
-    agentList.add(MiniMaxAgent(currentState, maxDepth, evalFunc))
-    agentList.add(MiniMaxABAgent(currentState, maxDepth, evalFunc))
-    agentList.add(MiniMaxTTAgent(currentState, maxDepth, evalFunc))
-    agentList.add(MiniMaxTTMOAgent(currentState, maxDepth, evalFunc))
-    agentList.add(MiniMaxTTNMAgent(currentState, maxDepth, evalFunc))
-    agentList.add(NegaMaxAgent(currentState, maxDepth, evalFunc))
-    agentList.add(NegaMaxABAgent(currentState, maxDepth, evalFunc))
+    agentList.add(MiniMaxAgent(currentState, maxDepth, evalFunc, true))
+    agentList.add(MiniMaxABAgent(currentState, maxDepth, evalFunc,true))
+    agentList.add(MiniMaxTTAgent(currentState, maxDepth, evalFunc, true))
+    agentList.add(MiniMaxTTMOAgent(currentState, maxDepth, evalFunc, true))
+    agentList.add(MiniMaxTTNMAgent(currentState, maxDepth, evalFunc, true))
+    agentList.add(NegaMaxAgent(currentState, maxDepth, evalFunc, true))
+    agentList.add(NegaMaxABAgent(currentState, maxDepth, evalFunc, true))
 
     currentState = currentState.playMove(CombinedAction.getCombinedAction(Action(Coordinate(8,7), 1)))
     currentState = currentState.playMove(CombinedAction.getCombinedAction(Action(Coordinate(10,10), 2)))

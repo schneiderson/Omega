@@ -1,10 +1,10 @@
 package omega.searchtree
 
-import omega.model.Action
 import omega.model.State
+import omega.model.CombinedAction
 import java.lang.Exception
 
-class Node (val tree: Tree, val state: State){
+class Node (val tree: Tree, val state: State, val combinedActions: Boolean = false){
     var isExpanded = false
     var visists = 0
 
@@ -15,7 +15,13 @@ class Node (val tree: Tree, val state: State){
 
     fun expand(){
         if(!isExpanded){
-            for(action in state.getLegalActions()){
+            var legalActions = if(combinedActions){
+                state.getLegalCombinedActions()
+            }else {
+                state.getLegalActions()
+            }
+
+            for(action in legalActions){
                 addChildConnectionFromAction(action)
             }
             isExpanded = true
@@ -24,21 +30,21 @@ class Node (val tree: Tree, val state: State){
 
 
 
-    private fun addChildConnectionFromAction(action: Action){
+    private fun addChildConnectionFromAction(action: CombinedAction){
         childConnections.add(getNewEdgeFromAction(action))
     }
 
-    fun getNewEdgeFromAction(action:Action): Edge{
-        var newNode = Node(tree, state)
+    fun getNewEdgeFromAction(action: CombinedAction): Edge{
+        var newNode = Node(tree, state, combinedActions)
         return Edge(action, this, newNode)
     }
 
     fun hasEdge(edge: Edge): Boolean{
-        return childConnections.any { it.move == edge.move }
+        return childConnections.any { it.move.equals(edge.move) }
     }
 
-    fun getEdgeByAction(action: Action): Edge?{
-        return childConnections.firstOrNull { it.move == action }
+    fun getEdgeByAction(action: CombinedAction): Edge?{
+        return childConnections.firstOrNull { it.move.equals(action) }
     }
 
     fun gotToChild(edge: Edge){
@@ -50,7 +56,7 @@ class Node (val tree: Tree, val state: State){
     }
 
     fun goToParent(){
-        var parentEdge = parentConnections.get(0)
+        var parentEdge = parentConnections[0]
         state.undoSimulatedMove(parentEdge.move)
     }
 
@@ -66,7 +72,7 @@ class Node (val tree: Tree, val state: State){
 
     fun getBestAction(): Edge{
         var highScore = Double.NEGATIVE_INFINITY
-        var highScorer = childConnections.get(0)
+        var highScorer = childConnections[0]
 
         for(edge in childConnections){
             if(edge.toNode.score > highScore){

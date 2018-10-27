@@ -1,11 +1,10 @@
 package omega.ai
 
-import omega.model.Action
 import omega.model.State
-import omega.util.GameSpecificKnowledge
+import omega.model.CombinedAction
 
 interface Agent{
     var agentName: String
-    fun getAction(state: State): Action
+    fun getAction(state: State): CombinedAction
 
 }

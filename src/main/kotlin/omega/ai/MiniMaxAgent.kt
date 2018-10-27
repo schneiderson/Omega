@@ -2,22 +2,31 @@ package omega.ai
 
 import omega.ai.evaluation.NodeEvaluation
 import omega.ai.evaluation.SimpleScore
-import omega.model.Action
 import omega.model.State
 import omega.searchtree.Node
 import omega.searchtree.Tree
+import omega.model.CombinedAction
 import omega.util.GameSpecificKnowledge
-import java.util.*
 
-class MiniMaxAgent(var initialState: State, var maxDepth: Int = 8, var evaluator: NodeEvaluation = SimpleScore()): Agent{
+class MiniMaxAgent(
+        var initialState: State,
+        var maxDepth: Int = 8,
+        var evaluator: NodeEvaluation = SimpleScore(),
+        var combinedActions: Boolean = false
+): Agent{
     override var agentName: String = "MiniMaxAgent - ${evaluator.evalFuncName}"
     var gsk = GameSpecificKnowledge(initialState)
+    var visits = 0
+    var terminalNodes = 0
 
     override
-    fun getAction(state: State): Action {
+    fun getAction(state: State): CombinedAction {
 
-        val tree = Tree(state)
+        val tree = Tree(state, combinedActions)
         val root = tree.root
+
+        visits = 0
+        terminalNodes = 0
 
         evaluate(root, maxDepth, state.playerTurn)
 
@@ -30,8 +39,13 @@ class MiniMaxAgent(var initialState: State, var maxDepth: Int = 8, var evaluator
     }
 
     fun miniMax(node: Node, depth: Int, maximizingPlayer: Int): Double{
-        if(depth == 0 || node.state.gameEnd())
+        // count number of visits
+        visits++
+
+        if(depth == 0 || node.state.gameEnd()){
+            terminalNodes++
             return evaluator.evaluate(node, maximizingPlayer, gsk)
+        }
 
         node.expand()
         var maximizing = node.state.playerTurn == maximizingPlayer

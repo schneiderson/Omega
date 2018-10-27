@@ -1,8 +1,8 @@
 package omega.searchtree
 
-import omega.model.Action
+import omega.model.CombinedAction
 
-class Edge (val move: Action, val fromNode: Node, val toNode: Node){
+class Edge (val move: CombinedAction, val fromNode: Node, val toNode: Node){
 
     var score = 0.0
 

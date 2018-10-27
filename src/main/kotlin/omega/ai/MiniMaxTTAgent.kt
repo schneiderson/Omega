@@ -1,37 +1,38 @@
 package omega.ai
 
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.runBlocking
 import omega.ai.evaluation.NodeEvaluation
 import omega.ai.evaluation.SimpleScore
-import omega.ai.evaluation.SimpleScore2
-import omega.model.Action
 import omega.model.State
 import omega.searchtree.Node
 import omega.searchtree.Tree
 import omega.transpositionTable.TranspositionTable
-import omega.util.Coordinate
+import omega.model.CombinedAction
 import omega.util.GameSpecificKnowledge
-import java.util.*
-import kotlin.system.measureTimeMillis
 
-class MiniMaxTTAgent(var initialState: State, var maxDepth: Int = 8, var evaluator: NodeEvaluation = SimpleScore()): Agent{
+class MiniMaxTTAgent(
+        var initialState: State,
+        var maxDepth: Int = 8,
+        var evaluator: NodeEvaluation = SimpleScore(),
+        var combinedActions: Boolean = false
+): Agent{
     override var agentName: String = "MiniMaxTTAgent - ${evaluator.evalFuncName}"
     var gsk = GameSpecificKnowledge(initialState)
     var transpositionTable = TranspositionTable(initialState)
-    val invalidMove = Action.invalidAction
+    val invalidMove = CombinedAction.invalidCombinedAction
 
-    var visists = 0
+    var visits = 0
+    var terminalNodes = 0
     var transposRetrievals = 0
 
     override
-    fun getAction(state: State): Action {
+    fun getAction(state: State): CombinedAction {
 
-        val tree = Tree(state)
+        val tree = Tree(state, combinedActions)
         transpositionTable = TranspositionTable(initialState)
         val root = tree.root
 
-        visists = 0
+        visits = 0
+        terminalNodes = 0
         transposRetrievals = 0
 
         evaluate(root, maxDepth, state.playerTurn)
@@ -46,17 +47,22 @@ class MiniMaxTTAgent(var initialState: State, var maxDepth: Int = 8, var evaluat
 
     fun miniMax(node: Node, depth: Int, maximizingPlayer: Int, alpha_init: Double, beta_init: Double): Double{
 
+        // count number of nodes visited
+        visits++
+
         /* Start with transposition table lookup */
         var moveInfo = transpositionTable.probeHash(node.state.grid.cells)
-        visists++
         if(!moveInfo.move.equals(invalidMove)){
             transposRetrievals ++
             return moveInfo.value
         }
 
 
-        if(depth == 0 || node.state.gameEnd())
+        if(depth == 0 || node.state.gameEnd()){
+            terminalNodes++
             return evaluator.evaluate(node, maximizingPlayer, gsk)
+        }
+
 
         var alpha = alpha_init
         var beta = beta_init

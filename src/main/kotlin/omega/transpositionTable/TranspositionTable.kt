@@ -1,15 +1,15 @@
 package omega.transpositionTable
 
-import omega.model.Action
 import omega.model.Cell
 import omega.model.State
+import omega.model.CombinedAction
 import java.util.Random
 
 class TranspositionTable (var initialState: State){
     fun array2dOfLong(sizeOuter: Int, sizeInner: Int) = Array(sizeOuter) { LongArray(sizeInner) }
 
 
-    var elements: HashMap<Long, TranspositionElement> = HashMap<Long, TranspositionElement>()
+    var elements: HashMap<Long, TranspositionElement> = HashMap()
 
     var zobristRandom = array2dOfLong(initialState.players, initialState.grid.cells.size)
 
@@ -24,16 +24,16 @@ class TranspositionTable (var initialState: State){
     }
 
     fun probeHash(cells: ArrayList<Cell>): MoveInfo{
-        var tmp_hash = createHashKey(cells)
-        if(elements.containsKey(tmp_hash)){
-            val te = elements[tmp_hash]
+        var tmpHash = createHashKey(cells)
+        if(elements.containsKey(tmpHash)){
+            val te = elements[tmpHash]
             return te!!.moveInfo
         }
         /* return invalid action */
-        return MoveInfo(0.0, Action.invalidAction)
+        return MoveInfo(0.0, CombinedAction.invalidCombinedAction)
     }
 
-    fun recordHash(cells: ArrayList<Cell>, value: Double, flags: Int, move: Action){
+    fun recordHash(cells: ArrayList<Cell>, value: Double, flags: Int, move: CombinedAction){
         var transpositionElement = TranspositionElement(createHashKey(cells), flags, MoveInfo(value, move))
         elements[transpositionElement.hashKey] = transpositionElement
 

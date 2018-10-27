@@ -1,33 +1,32 @@
 package omega.ai
 
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.runBlocking
 import omega.ai.evaluation.NodeEvaluation
 import omega.ai.evaluation.SimpleScore
-import omega.ai.evaluation.SimpleScore2
-import omega.model.Action
 import omega.model.State
 import omega.searchtree.Node
 import omega.searchtree.Tree
 import omega.transpositionTable.TranspositionTable
-import omega.util.Coordinate
+import omega.model.CombinedAction
 import omega.util.GameSpecificKnowledge
-import java.util.*
-import kotlin.system.measureTimeMillis
 
-class MiniMaxTTMOAgent(var initialState: State, var maxDepth: Int = 8, var evaluator: NodeEvaluation = SimpleScore()): Agent{
+class MiniMaxTTMOAgent(
+        var initialState: State,
+        var maxDepth: Int = 8,
+        var evaluator: NodeEvaluation = SimpleScore(),
+        var combinedActions: Boolean = false
+): Agent{
     override var agentName: String = "MiniMaxTTMOAgent - ${evaluator.evalFuncName}"
     var gsk = GameSpecificKnowledge(initialState)
     var transpositionTable = TranspositionTable(initialState)
-    val invalidMove = Action.invalidAction
+    val invalidMove = CombinedAction.invalidCombinedAction
 
     var visists = 0
     var transposRetrievals = 0
 
     override
-    fun getAction(state: State): Action {
+    fun getAction(state: State): CombinedAction {
 
-        val tree = Tree(state)
+        val tree = Tree(state, combinedActions)
         transpositionTable = TranspositionTable(initialState)
         val root = tree.root
 

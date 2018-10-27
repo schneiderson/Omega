@@ -2,22 +2,21 @@ package omega.ai
 
 import omega.ai.evaluation.NodeEvaluation
 import omega.ai.evaluation.SimpleScore
-import omega.model.Action
 import omega.model.State
 import omega.searchtree.Node
 import omega.searchtree.Tree
+import omega.model.CombinedAction
 import omega.util.GameSpecificKnowledge
-import java.util.*
 
-class GreedyAgent(var initialState: State) : Agent{
+class GreedyAgent(var initialState: State, var combinedActions: Boolean = false) : Agent{
     var evaluator: NodeEvaluation = SimpleScore()
     override var agentName: String = "GreedyAgent - ${evaluator.evalFuncName}"
     var gsk: GameSpecificKnowledge = GameSpecificKnowledge(initialState)
 
     override
-    fun getAction(state: State): Action {
+    fun getAction(state: State): CombinedAction {
 
-        val tree = Tree(state)
+        val tree = Tree(state, combinedActions)
         val root = tree.root
 
         root.expand()

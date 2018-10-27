@@ -1,6 +1,5 @@
 package omega.model
 
-import omega.util.CombinedAction
 import kotlin.math.pow
 
 
@@ -17,37 +16,48 @@ class State(var grid: Grid = Grid(), var playerTurn: Int = 1, var colorToPlay: I
         playerScores.forEach { grid.getScore(it) }
     }
 
-    fun playMove(move: Action): State {
+    fun playMove(move: CombinedAction): State {
         var newGrid = grid.deepCopy()
         try {
-            var newCell = newGrid.getCellByCoordinates(move.coordinate)
-            if (newCell != null) newCell.cellType = move.cellType
+            move.actions.forEach {
+                var newCell = newGrid.getCellByCoordinates(it.coordinate)
+                if (newCell != null) newCell.cellType = it.cellType
+            }
         } catch (e: Exception) {
             println(e.message)
         }
         return State(newGrid, nextPlayersTurn(), nextColorToPlay())
     }
 
-    fun simulateMove(move: Action){
+    fun simulateMove(move: CombinedAction){
         try {
-            var cell = grid.getCellByCoordinates(move.coordinate)
-            if (cell != null) {
-                cell.cellType = move.cellType
-                playerTurn = nextPlayersTurn()
-                colorToPlay = nextColorToPlay()
+            move.actions.forEach {
+                var cell = grid.getCellByCoordinates(it.coordinate)
+                if (cell != null) {
+                    cell.cellType = it.cellType
+                    playerTurn = nextPlayersTurn()
+                    colorToPlay = nextColorToPlay()
+                }else {
+                    println("THIS SHOULD NEVER HAPPEN")
+                }
             }
         } catch (e: Exception) {
             println(e.message)
         }
     }
 
-    fun undoSimulatedMove(move: Action){
+    fun undoSimulatedMove(move: CombinedAction){
         try {
-            var cell = grid.getCellByCoordinates(move.coordinate)
-            if (cell != null && cell.cellType == move.cellType) {
-                cell.cellType = 0
-                playerTurn = previousPlayersTurn()
-                colorToPlay = previousColorToPlay()
+            if(move.actions.size<1) println("WTF?")
+            move.actions.forEach {
+                var cell = grid.getCellByCoordinates(it.coordinate)
+                if (cell != null && cell.cellType == it.cellType) {
+                    cell.cellType = 0
+                    playerTurn = previousPlayersTurn()
+                    colorToPlay = previousColorToPlay()
+                } else {
+                    println("THIS SHOULD NEVER HAPPEN")
+                }
             }
         } catch (e: Exception) {
             println(e.message)
@@ -98,19 +108,19 @@ class State(var grid: Grid = Grid(), var playerTurn: Int = 1, var colorToPlay: I
         return false
     }
 
-    fun getLegalActions(): List<Action>{
-        return grid.getFreeCells().map{ Action(it.coordinate, colorToPlay) }
+    fun getLegalActions(): List<CombinedAction>{
+        return grid.getFreeCells().map{ CombinedAction.getCombinedAction(Action(it.coordinate, colorToPlay)) }
     }
 
     fun getLegalCombinedActions(): List<CombinedAction>{
         var combActionList = ArrayList<CombinedAction>()
         var firstAction = grid.getFreeCells().map{ Action(it.coordinate, colorToPlay) }
         firstAction.forEach {
-            simulateMove(it)
+            simulateMove(CombinedAction.getCombinedAction(it))
             grid.getFreeCells().map { cell ->
-                combActionList.add( CombinedAction( it, Action(cell.coordinate, colorToPlay) ) )
+                combActionList.add(CombinedAction(arrayListOf(it, Action(cell.coordinate, colorToPlay))))
             }
-            undoSimulatedMove(it)
+            undoSimulatedMove(CombinedAction.getCombinedAction(it))
         }
         return combActionList
     }

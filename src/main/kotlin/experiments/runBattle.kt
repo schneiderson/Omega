@@ -19,9 +19,10 @@ fun main(args: Array<String>){
 
     gm.changeBoardSize(boardSize)
 
-    var agent1 = MiniMaxIDAgent(gm.currentState, 10, evalFunc1, maxtime)
-//    var agent2 = MiniMaxTTAgent(gm.currentState, maxdepth, evalFunc1)
-    var agent2 = RandomAgent(gm.currentState)
+//    var agent1 = MiniMaxIDAgent(gm.currentState, 10, evalFunc1, maxtime)
+    var agent1 = MiniMaxTTAgent(gm.currentState, maxdepth, evalFunc1)
+    var agent2 = MiniMaxTTAgent(gm.currentState, maxdepth, evalFunc1, true)
+//    var agent2 = RandomAgent(gm.currentState)
 
 //    gm.agents[1] = GreedyAgent(gm.currentState)
 

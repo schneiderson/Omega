@@ -1,26 +1,27 @@
 package omega.ai
 
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.runBlocking
 import omega.ai.evaluation.NodeEvaluation
 import omega.ai.evaluation.SimpleScore
-import omega.model.Action
 import omega.model.State
 import omega.searchtree.Node
 import omega.searchtree.Tree
+import omega.model.CombinedAction
 import omega.util.GameSpecificKnowledge
-import java.util.*
-import kotlin.system.measureTimeMillis
 
-class NegaMaxABAgent(var initialState: State, var maxDepth: Int = 8, var evaluator: NodeEvaluation = SimpleScore()): Agent{
+class NegaMaxABAgent(
+        var initialState: State,
+        var maxDepth: Int = 8,
+        var evaluator: NodeEvaluation = SimpleScore(),
+        var combinedActions: Boolean = false
+): Agent{
     override var agentName: String = "NegaMaxABAgent - ${evaluator.evalFuncName}"
     var gsk = GameSpecificKnowledge(initialState)
 
 
     override
-    fun getAction(state: State): Action {
+    fun getAction(state: State): CombinedAction {
 
-        val tree = Tree(state)
+        val tree = Tree(state, combinedActions)
         val root = tree.root
 
         evaluate(root, maxDepth, state.playerTurn)
@@ -45,16 +46,16 @@ class NegaMaxABAgent(var initialState: State, var maxDepth: Int = 8, var evaluat
 
         for(edge in node.childConnections){
             var factor = 1
-            var alpha_pass = alpha
-            var beta_pass = beta
+            var alphaPass = alpha
+            var betaPass = beta
             if(node.state.playerTurn != maximizingPlayer){
                 factor = -1
-                alpha_pass = beta * -1
-                beta_pass = alpha * -1
+                alphaPass = beta * -1
+                betaPass = alpha * -1
             }
 
             node.gotToChild(edge)
-            var nodeValue = factor * negaMax(edge.toNode, depth - 1, maximizingPlayer, alpha_pass, beta_pass)
+            var nodeValue = factor * negaMax(edge.toNode, depth - 1, maximizingPlayer, alphaPass, betaPass)
             edge.toNode.goToParent()
 
             value = maxOf(value, nodeValue)

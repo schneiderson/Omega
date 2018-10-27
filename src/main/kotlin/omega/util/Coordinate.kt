@@ -19,11 +19,11 @@ data class Coordinate(private var x: Int, private var y: Int) {
     }
 
     fun getCubeCoordinates(): Cube {
-        var c_x = (x - (y - (y % 2)) / 2) - 5
-        var c_z = y - 9
-        var c_y = -c_x - c_z
+        var cX = (x - (y - (y % 2)) / 2) - 5
+        var cZ = y - 9
+        var cY = -cX - cZ
 
-        return Cube(c_x, c_y, c_z)
+        return Cube(cX, cY, cZ)
     }
 
     fun getAxialCoordinates(): Pair<Int, Int> {

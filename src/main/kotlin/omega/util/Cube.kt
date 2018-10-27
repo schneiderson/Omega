@@ -5,6 +5,4 @@ package omega.util
  *
  * Representation for a cubic coordinate
  */
-data class Cube(var x: Int, var y: Int, var z: Int) {
-
-}
+data class Cube(var x: Int, var y: Int, var z: Int)

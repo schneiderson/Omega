@@ -13,43 +13,31 @@ import tornadofx.*
  *
  * (UI fragment)
  */
-class Hexagon : Polygon {
-    var size: Double
-    var cell: Cell
-    var strokeSize: Double
+class Hexagon(var cell: Cell, var size: Double = 20.0) : Polygon() {
+    private var strokeSize: Double = 1.0
 
-    private lateinit var controller: ViewController
+    private var controller: ViewController = ViewController()
 
     companion object {
-        val INDENTATION = 50
+        const val INDENTATION = 50
     }
 
-    constructor(cell: Cell, size: Double = 20.0) {
-        this.cell = cell
-        this.size = size
-        this.strokeSize = 1.0
-
-        controller = ViewController()
-
+    init {
         addEventFilter(MouseEvent.MOUSE_CLICKED) { e ->
             controller.cellClick(e, cell)
         }
-
         addEventFilter(MouseEvent.MOUSE_ENTERED) { e ->
             if (cell.cellType == 0) {
                 strokeWidth = this.strokeSize + 4
             }
             controller.cellHover(e, cell)
         }
-
         addEventFilter(MouseEvent.MOUSE_EXITED) { e ->
             if (cell.cellType > -1) {
                 strokeWidth = this.strokeSize
             }
         }
-
         addClass(Styles.hexagon)
-
         repaint(size)
     }
 
@@ -61,24 +49,23 @@ class Hexagon : Polygon {
             isVisible = false
         } else {
             stroke = c("BLACK")
-            if (cell.cellType == -1) {
+            when {
                 // disabled
-                addClass(Styles.hexDisabled)
-            } else if (cell.cellType == 0) {
+                cell.cellType == -1 -> addClass(Styles.hexDisabled)
                 // free cell
-                addClass(Styles.hexFree)
-            } else if (cell.cellType == 1) {
+                cell.cellType == 0 -> addClass(Styles.hexFree)
                 // player 1
-                fill = c("WHITE")
-            } else if (cell.cellType == 2) {
+                cell.cellType == 1 -> fill = c("WHITE")
                 // player 2
-                fill = c("BLACK")
-                stroke = c("WHITE")
-            } else if (cell.cellType == 3) {
+                cell.cellType == 2 -> {
+                    fill = c("BLACK")
+                    stroke = c("WHITE")
+                }
                 // player 3
-                fill = c("#A30049")
-            } else if (cell.cellType == 4) {
-                fill = c("#33B800")
+                cell.cellType == 3 ->
+                    fill = c("#A30049")
+                // player 4
+                cell.cellType == 4 -> fill = c("#33B800")
             }
         }
         strokeWidth = this.strokeSize
@@ -93,7 +80,7 @@ class Hexagon : Polygon {
     }
 
     fun getCorners(size: Double): ArrayList<Double> {
-        var corners: ArrayList<Double> = ArrayList<Double>()
+        var corners: ArrayList<Double> = ArrayList()
         var center: Point2D = calcCenter()
         for (i in 0..5) {
             var degree: Int = 60 * i - 30
