@@ -3,6 +3,7 @@ package omega.ai.evaluation
 import omega.searchtree.Node
 import omega.util.GameSpecificKnowledge
 import java.lang.Exception
+import java.lang.Math.abs
 
 class SimpleScore2: NodeEvaluation{
     override val evalFuncName = "SimpleScore2"
@@ -18,36 +19,21 @@ class SimpleScore2: NodeEvaluation{
         var playerClusters = playerScore.clusters
         var opponentClusters = opponentScore.clusters
 
-        var score = Double.NEGATIVE_INFINITY
+        var score = 0.0
 
         if(gsk != null){
-            gsk.pointsUpperBound
-            gsk.numClustersUpperBound
 
-            var roundsPlayed = node.state.getRoundsPlayed()
+            var clusterWeight = 0.5
+            var pointWeight = 1 - clusterWeight
 
-            var clusterWeight = 1
+            var clusterScorePlayer = 2 / (abs(gsk.numClustersUpperBound - playerClusters.size) + 1)
+            var pointScorePlayer = 2 / (abs(gsk.pointsUpperBound - playerScore.score) + 1)
 
-            var pointWeight = 0
-            if(gsk.rounds - roundsPlayed < 3){
-                var pointWeight = 1
-                var clusterWeight = 0
-            }
+            var clusterScoreOpponent = 2 / (abs(gsk.numClustersUpperBound - opponentClusters.size) + 1)
+            var pointScoreOpponent = 2 / (abs(gsk.pointsUpperBound - opponentScore.score) + 1)
 
-            var clusterScorePlayer = playerClusters.size - gsk.numClustersUpperBound
-            var avgClusterSizePlayer = 0
-            playerClusters.forEach { avgClusterSizePlayer += it.size }
-            avgClusterSizePlayer /= clusterScorePlayer
-            var pointScorePlayer = playerScore.score - gsk.pointsUpperBound
-
-
-
-            var clusterScoreOpponent = gsk.numClustersUpperBound - opponentClusters.size
-            var pointScoreOpponent = gsk.pointsUpperBound - opponentScore.score
-
-
-            score = clusterWeight * ( clusterScorePlayer  )  + pointWeight * pointScorePlayer
-
+            score = (clusterWeight * clusterScorePlayer + pointWeight * pointScorePlayer) * 10
+            - (clusterWeight * clusterScoreOpponent + pointWeight * pointScoreOpponent) * 10
 
         } else {
             throw Exception("game specific knowledge missing in eval function!")

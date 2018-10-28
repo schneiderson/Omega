@@ -2,6 +2,7 @@ package omega.game
 
 import omega.ai.*
 import omega.ai.evaluation.SimpleScore2
+import omega.ai.evaluation.SimpleScore3
 import omega.model.Action
 import omega.model.Cell
 import omega.model.State
@@ -14,7 +15,7 @@ import kotlin.concurrent.thread
 import kotlin.properties.Delegates
 
 object GameManager {
-    var boardSize: Int = 5
+    var boardSize: Int = 3
     const val maxBoardSize: Int = 10
 
     var stateChangeListener: StateChangeListener? = null
@@ -29,7 +30,7 @@ object GameManager {
 
     val playerColor = arrayOf("", "White", "Black", "Red", "Green")
     val evalFunction = SimpleScore2()
-    const val maxDepth = 6
+    const val maxDepth = 4
     val agents: ArrayList<Agent> = arrayListOf(
             HumanAgent(currentState),
 //            HumanAgent(currentState),

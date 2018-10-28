@@ -2,7 +2,7 @@ package experiments
 
 import omega.ai.*
 import omega.ai.evaluation.SimpleScore
-import omega.ai.evaluation.SimpleScore2
+import omega.ai.evaluation.SimpleScore3
 import omega.game.GameManager
 import omega.model.CombinedAction
 import kotlin.system.measureTimeMillis
@@ -10,11 +10,11 @@ import kotlin.system.measureTimeMillis
 fun main(args: Array<String>){
 
     var evalFunc1 = SimpleScore()
-    var evalFunc2 = SimpleScore2()
+    var evalFunc2 = SimpleScore3()
 
     var gm = GameManager
-    var maxdepth = 2
-    var boardSize = 2
+    var maxdepth = 4
+    var boardSize = 3
 
     gm.changeBoardSize(boardSize)
 

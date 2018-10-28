@@ -2,7 +2,6 @@ package experiments
 
 import omega.ai.*
 import omega.ai.evaluation.SimpleScore
-import omega.ai.evaluation.SimpleScore2
 import omega.model.Action
 import omega.model.CombinedAction
 import omega.model.Grid
