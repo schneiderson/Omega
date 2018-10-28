@@ -19,6 +19,10 @@ class MiniMaxABAgent(
     var visits = 0
     var terminalNodes = 0
 
+    override fun setSearchDepth(depth: Int) {
+        maxDepth = depth
+    }
+
     override fun getAction(state: State): CombinedAction {
 
         val tree = Tree(state, combinedActions)

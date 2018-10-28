@@ -10,6 +10,7 @@ import tornadofx.*
 class Styles : Stylesheet() {
     companion object {
         val menuButton by cssclass()
+        val boardMenuButton by cssclass()
         val heading by cssclass()
         val hexagon by cssclass()
         val board by cssclass()
@@ -40,9 +41,14 @@ class Styles : Stylesheet() {
             cursor = Cursor.HAND
         }
 
-//        hexagon and hover {
-//            fill = c("MAGENTA")
-//        }
+        boardMenuButton {
+            fontWeight = FontWeight.SEMI_BOLD
+            textFill = c(255, 100, 50)
+            borderColor += box(c(255, 255, 255), c(255, 255, 255), c(255, 255, 255), c(255, 255, 255))
+            backgroundColor += c(255, 255, 255)
+            fontSize = 15.px
+            cursor = Cursor.HAND
+        }
 
         hexDisabled {
             fill = c("#608786", 0.2)

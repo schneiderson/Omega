@@ -3,7 +3,7 @@ package omega.ui.views
 import omega.game.Styles
 import tornadofx.*
 
-class FirstView : View("Omega board game") {
+class TopView : View("Omega board game") {
 
     override val root = hbox {
         label(title) {

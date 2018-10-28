@@ -2,30 +2,30 @@ package experiments
 
 import omega.ai.*
 import omega.ai.evaluation.SimpleScore
-import omega.ai.evaluation.SimpleScore2
-import omega.ai.evaluation.SimpleScore3
+import omega.ai.evaluation.ClusterPointScore
+import omega.ai.evaluation.ClusterSizePointScore
+import omega.ai.evaluation.WeightShiftScore
 import omega.game.GameManager
 import kotlin.system.measureTimeMillis
 
 fun main(args: Array<String>){
 
-    var evalFunc1 = SimpleScore()
-    var evalFunc2 = SimpleScore2()
+    var evalFunc1 = WeightShiftScore()
+
+//    var evalFunc1 = ClusterPointScore()
+    var evalFunc2 = ClusterSizePointScore()
 
     var gm = GameManager
-    var x = 10
+    var x = 1
     var maxdepth = 4
     var maxtime = 3000L
-    var boardSize = 3
+    var boardSize = 4
 
     gm.changeBoardSize(boardSize)
 
-//    var agent1 = MiniMaxIDAgent(gm.currentState, 10, evalFunc1, maxtime)
-    var agent1 = MiniMaxTTAgent(gm.currentState, maxdepth, evalFunc1)
-    var agent2 = MiniMaxTTAgent(gm.currentState, maxdepth, evalFunc2, true)
-//    var agent2 = RandomAgent(gm.currentState)
 
-//    gm.agents[1] = GreedyAgent(gm.currentState)
+    var agent1 = MiniMaxABAgent(gm.currentState, maxdepth, evalFunc1)
+    var agent2 = MiniMaxABAgent(gm.currentState, maxdepth, evalFunc2)
 
     println("BoardSize: $boardSize")
     println("Maxdepth: $maxdepth")

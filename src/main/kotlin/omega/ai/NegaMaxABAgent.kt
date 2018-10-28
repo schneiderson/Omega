@@ -17,6 +17,9 @@ class NegaMaxABAgent(
     override var agentName: String = "NegaMaxABAgent - ${evaluator.evalFuncName}"
     var gsk = GameSpecificKnowledge(initialState)
 
+    override fun setSearchDepth(depth: Int) {
+        maxDepth = depth
+    }
 
     override
     fun getAction(state: State): CombinedAction {

@@ -48,7 +48,6 @@ class State(var grid: Grid = Grid(), var playerTurn: Int = 1, var colorToPlay: I
 
     fun undoSimulatedMove(move: CombinedAction){
         try {
-            if(move.actions.size<1) println("WTF?")
             move.actions.forEach {
                 var cell = grid.getCellByCoordinates(it.coordinate)
                 if (cell != null && cell.cellType == it.cellType) {

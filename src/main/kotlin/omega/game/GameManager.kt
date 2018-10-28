@@ -1,8 +1,7 @@
 package omega.game
 
 import omega.ai.*
-import omega.ai.evaluation.SimpleScore2
-import omega.ai.evaluation.SimpleScore3
+import omega.ai.evaluation.SimpleScore
 import omega.model.Action
 import omega.model.Cell
 import omega.model.State
@@ -15,7 +14,7 @@ import kotlin.concurrent.thread
 import kotlin.properties.Delegates
 
 object GameManager {
-    var boardSize: Int = 3
+    var boardSize: Int = 4
     const val maxBoardSize: Int = 10
 
     var stateChangeListener: StateChangeListener? = null
@@ -29,14 +28,13 @@ object GameManager {
     private var stateHistory: LinkedList<State> = LinkedList()
 
     val playerColor = arrayOf("", "White", "Black", "Red", "Green")
-    val evalFunction = SimpleScore2()
-    const val maxDepth = 4
+    val evalFunction = SimpleScore()
+    var maxDepth = 8
+
+    // List of Agents
     val agents: ArrayList<Agent> = arrayListOf(
             HumanAgent(currentState),
-//            HumanAgent(currentState),
-            MiniMaxTTAgent(currentState, maxDepth, evalFunction),
-            RandomAgent(currentState),
-            RandomAgent(currentState))
+            MiniMaxTTAgent(currentState, maxDepth, evalFunction))
 
     fun changeBoardSize(size: Int) {
         boardSize = size
@@ -47,6 +45,34 @@ object GameManager {
 
     fun changeNumberOfPlayers(players: Int) {
         currentState.players = players
+    }
+
+    fun setOpponent(agent: String){
+        when (agent) {
+            "MiniMaxAgent" -> {
+                agents[1] = MiniMaxAgent(currentState, maxDepth, evalFunction)
+            }
+            "MiniMaxABAgent" -> {
+                agents[1] = MiniMaxABAgent(currentState, maxDepth, evalFunction)
+            }
+            "MiniMaxTTAgent" -> {
+                agents[1] = MiniMaxTTAgent(currentState, maxDepth, evalFunction)
+            }
+            "MiniMaxIDAgent" -> {
+                agents[1] = MiniMaxIDAgent(currentState, maxDepth, evalFunction)
+            }
+            "MiniMaxTTMOAgent" -> {
+                agents[1] = MiniMaxTTMOAgent(currentState, maxDepth, evalFunction)
+            }
+            "MiniMaxTTNMAgent" -> {
+                agents[1] = MiniMaxTTNMAgent(currentState, maxDepth, evalFunction)
+            }
+        }
+    }
+
+    fun setSearchDepth(depth: Int){
+        maxDepth = depth
+        agents.forEach { it.setSearchDepth(maxDepth) }
     }
 
     fun addStateChangeListener(listener: StateChangeListener){

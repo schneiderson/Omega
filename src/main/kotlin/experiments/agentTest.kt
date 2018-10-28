@@ -1,7 +1,7 @@
 package experiments
 
 import omega.ai.*
-import omega.ai.evaluation.SimpleScore3
+import omega.ai.evaluation.ClusterSizePointScore
 import omega.model.Action
 import omega.model.Grid
 import omega.model.State
@@ -15,7 +15,7 @@ fun main(args: Array<String>){
 
     var maxDepth = 20
 
-    var evalFunc = SimpleScore3()
+    var evalFunc = ClusterSizePointScore()
     var time:Long = 1000
     var agent = MiniMaxIDAgent(currentState, maxDepth, evalFunc, time)
 

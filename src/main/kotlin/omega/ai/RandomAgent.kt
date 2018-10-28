@@ -9,6 +9,10 @@ class RandomAgent(var initialState: State, var combinedActions: Boolean = false)
 
     override var agentName: String = "RandomAgent"
 
+    override fun setSearchDepth(depth: Int) {
+        //
+    }
+
     override
     fun getAction(state: State): CombinedAction {
         if(combinedActions){

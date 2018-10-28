@@ -9,9 +9,14 @@ import omega.model.CombinedAction
 import omega.util.GameSpecificKnowledge
 
 class GreedyAgent(var initialState: State, var combinedActions: Boolean = false) : Agent{
+
     var evaluator: NodeEvaluation = SimpleScore()
     override var agentName: String = "GreedyAgent - ${evaluator.evalFuncName}"
     var gsk: GameSpecificKnowledge = GameSpecificKnowledge(initialState)
+
+    override fun setSearchDepth(depth: Int) {
+        //
+    }
 
     override
     fun getAction(state: State): CombinedAction {

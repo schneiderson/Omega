@@ -20,8 +20,8 @@ class MainMenuView : View("Omega") {
                 action { controller.showScreen("game") }
                 addClass(Styles.menuButton)
             }
-            button("how-to") {
-                action { controller.showScreen("how-to") }
+            button("options") {
+                action { controller.showScreen("options") }
                 addClass(Styles.menuButton)
             }
             button("exit") {

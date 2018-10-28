@@ -9,6 +9,10 @@ class HumanAgent(var initialState: State): Agent{
 
     override var agentName: String = "HumanAgent"
 
+    override fun setSearchDepth(depth: Int) {
+        //
+    }
+
     override
     fun getAction(state: State): CombinedAction {
         // Dummy implementation

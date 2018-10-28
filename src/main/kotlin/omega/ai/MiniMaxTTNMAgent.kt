@@ -23,6 +23,9 @@ class MiniMaxTTNMAgent(
     var visists = 0
     var transposRetrievals = 0
 
+    override fun setSearchDepth(depth: Int) {
+        maxDepth = depth
+    }
 
     override
     fun getAction(state: State): CombinedAction {

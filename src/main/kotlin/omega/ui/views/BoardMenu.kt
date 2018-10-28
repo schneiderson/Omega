@@ -18,8 +18,16 @@ class BoardMenuView : View("Board menu") {
     var label: Label = Label(title)
     var undoButton = button("Undo Action") {
         action { controller.undoMove() }
-        addClass(Styles.menuButton)
+        addClass(Styles.boardMenuButton)
         isDisable = true
+    }
+
+    var exitButton = button("Exit") {
+        action {
+            controller.gameManager.resetGame()
+            find(GameView::class).replaceWith(MainView::class)
+        }
+        addClass(Styles.boardMenuButton)
     }
 
     override val root = hbox {
@@ -31,6 +39,6 @@ class BoardMenuView : View("Board menu") {
         cube.addClass(Styles.statsText)
 
 
-        children.addAll(label, undoButton, status, offset, axial, cube)
+        children.addAll(label, undoButton, exitButton, status, offset, axial, cube)
     }
 }

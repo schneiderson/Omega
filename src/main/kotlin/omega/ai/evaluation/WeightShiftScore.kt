@@ -5,8 +5,8 @@ import omega.util.GameSpecificKnowledge
 import java.lang.Exception
 import java.lang.Math.abs
 
-class SimpleScore3: NodeEvaluation{
-    override val evalFuncName = "SimpleScore3"
+class WeightShiftScore: NodeEvaluation{
+    override val evalFuncName = "WeightShiftScore"
 
     override fun evaluate(node: Node, scoresForPlayer: Int, gsk: GameSpecificKnowledge?): Double {
         var state = node.state
@@ -27,35 +27,31 @@ class SimpleScore3: NodeEvaluation{
 
             var roundsPlayed = node.state.getRoundsPlayed()
 
-            var clusterWeight = 1
+            var clusterWeight = gsk.rounds.toDouble()/2 / (gsk.rounds.toDouble()/2 - roundsPlayed.toDouble()/2 + Double.MIN_VALUE)
+            var pointWeight = 1 - clusterWeight
 
-            var pointWeight = 0
-            if(gsk.rounds - roundsPlayed < 3){
-                var pointWeight = 1
-                var clusterWeight = 0
-            }
-
-            var clusterScorePlayer = 1 / abs(playerClusters.size - gsk.numClustersUpperBound)
-            var avgClusterSizePlayer = 0
+            // player
+            var clusterScorePlayer = 2.0 / (abs(playerClusters.size - gsk.numClustersUpperBound) + 1)
+            var avgClusterSizePlayer = 0.0
             playerClusters.forEach { avgClusterSizePlayer += it.size }
             avgClusterSizePlayer /= clusterScorePlayer
-            var clusterSizeScorePlayer = 1 / abs(3 - avgClusterSizePlayer)
+            var clusterSizeScorePlayer = 2.0 / (abs(3 - avgClusterSizePlayer) + 1)
             var pointScorePlayer = playerScore.score - gsk.pointsUpperBound
 
 
-
-            var clusterScoreOpponent = opponentClusters.size - gsk.numClustersUpperBound
+            // opponent
+            var clusterScoreOpponent = 2.0 / (abs(opponentClusters.size - gsk.numClustersUpperBound) + 1)
             var pointScoreOpponent = opponentScore.score - gsk.pointsUpperBound
-            var avgClusterSizeOpponent = 0
-            playerClusters.forEach { avgClusterSizeOpponent += it.size }
+            var avgClusterSizeOpponent = 0.0
+            opponentClusters.forEach { avgClusterSizeOpponent += it.size }
             avgClusterSizeOpponent/= clusterScoreOpponent
-            var clusterSizeScoreOpponent = 1 / abs(3 - avgClusterSizeOpponent)
+            var clusterSizeScoreOpponent = 2.0 / (abs(3 - avgClusterSizeOpponent) +1)
+
 
             var maximizingPlayerScore = clusterWeight * (clusterScorePlayer * clusterSizeScorePlayer) + pointScorePlayer
             var opponentScore = clusterWeight * (clusterScoreOpponent * clusterSizeScoreOpponent) + pointScoreOpponent
 
-            score = clusterWeight * ( clusterScorePlayer  )  + pointWeight * pointScorePlayer
-
+            score = maximizingPlayerScore - opponentScore
 
         } else {
             throw Exception("game specific knowledge missing in eval function!")

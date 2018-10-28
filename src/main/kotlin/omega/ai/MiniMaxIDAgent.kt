@@ -23,6 +23,10 @@ class MiniMaxIDAgent(
     var gsk = GameSpecificKnowledge(initialState)
     var depthReached = 0
 
+    override fun setSearchDepth(depth: Int) {
+        maxDepth = depth
+    }
+
     override
     fun getAction(state: State): CombinedAction {
 

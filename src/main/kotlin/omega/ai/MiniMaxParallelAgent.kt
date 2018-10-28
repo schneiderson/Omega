@@ -18,6 +18,10 @@ class MiniMaxParallelAgent(
     var executeAsync = true
     var gsk = GameSpecificKnowledge(initialState)
 
+    override fun setSearchDepth(depth: Int) {
+        maxDepth = depth
+    }
+
     override
     fun getAction(state: State): CombinedAction {
 

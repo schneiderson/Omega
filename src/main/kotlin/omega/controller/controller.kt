@@ -6,6 +6,7 @@ import omega.game.GameManager
 import omega.model.Cell
 import tornadofx.*
 import javafx.scene.input.MouseEvent
+import omega.ai.Agent
 import omega.model.State
 import omega.ui.views.*
 import omega.util.StateChangeListener
@@ -18,25 +19,23 @@ class ViewController : Controller(), StateChangeListener {
     private val boardMenu: BoardMenuView by inject()
     private val gameStats: GameStatsView by inject()
     private val board: BoardView by inject()
+    private val options: OptionsView by inject()
     val gameManager: GameManager = GameManager
 
     init {
         gameManager.addStateChangeListener(this)
     }
 
-//    private val howTo: HowToView by inject()
-//    private val gameOver: GameOverView by inject()
-
-
-    fun showScreen(screen: String) = when (screen) {
-        "menu" -> FX.primaryStage.scene.root = menu.root
-        "game" -> {
-            FX.primaryStage.scene.root = game.root
-        }
-//        "how-to" -> FX.primaryStage.scene.root = howTo.root
-//        "game-over" -> FX.primaryStage.scene.root = gameOver.root
-        else -> {
-            System.exit(1); throw NotImplementedError("Requested screen doesn't exist.")
+    fun showScreen(screen: String) {
+        when (screen) {
+            "menu" -> FX.primaryStage.scene.root = menu.root
+            "game" -> {
+                FX.primaryStage.scene.root = game.root
+            }
+            "options" -> FX.primaryStage.scene.root = options.root
+            else -> {
+                System.exit(1); throw NotImplementedError("Requested screen doesn't exist.")
+            }
         }
     }
 
@@ -47,8 +46,36 @@ class ViewController : Controller(), StateChangeListener {
         }
     }
 
-    fun newGame() {
-        println("new game")
+    fun setOpponent(agent: String){
+        gameManager.setOpponent(agent)
+    }
+
+    fun getBoardSizes(): List<Int>{
+        return listOf(3,4,5,6,7,8,10)
+    }
+
+    fun getOpponent(): String{
+        return gameManager.agents[1].agentName.split(" ")[0]
+    }
+
+    fun getOpponentList(): List<String>{
+        return listOf("MiniMaxAgent", "MiniMaxABAgent", "MiniMaxTTAgent", "MiniMaxIDAgent", "MiniMaxTTMOAgent", "MiniMaxTTNMAgent")
+    }
+
+    fun getSearchDepth(): Int{
+        return gameManager.maxDepth
+    }
+
+    fun setSearchDepth(depth : Int) {
+        gameManager.setSearchDepth(depth)
+    }
+
+    fun setBoardSize(size: Int){
+        gameManager.changeBoardSize(size)
+    }
+
+    fun getBoardSize(): Int{
+        return gameManager.boardSize
     }
 
     fun displayPosition(event: MouseEvent) {
